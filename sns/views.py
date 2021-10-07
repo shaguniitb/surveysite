@@ -8,3 +8,12 @@ def index(request):
 
 def feed(request):
     return render(request, "sns/feed.html", {})
+
+def toggle(request):
+    return render(request, "sns/toggle.html", {})    
+
+def wordfilter(request):
+    return render(request, "sns/wordfilter.html", {})        
+
+def slider(request):
+    return render(request, "sns/slider.html", {})        

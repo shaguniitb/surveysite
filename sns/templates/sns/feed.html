@@ -1,12 +1,13 @@
-<!doctype html>
-{% load static %}
-<html lang="en">  
+{% extends "sns/page_base.html" %}
 
-<head>
-  <meta charset="utf-8" />
-  <link rel="stylesheet" href="{% static 'sns/feed.css' %}">
-</head>
-<body>
+
+{% load static %}
+
+{% block scripts %}
+<link rel="stylesheet" href="{% static 'sns/feed.css' %}">
+{% endblock scripts %}
+
+{% block content %}
 
   <div class="main-container">
 
@@ -132,5 +133,5 @@
       </div>
     </div>
   </div> <!-- end main-container -->
-</body>
+{% endblock content %}
 

@@ -1,0 +1,66 @@
+{% load static %}
+<head>
+<link rel="stylesheet" href="{% static 'sns/toggle.css' %}">
+</head>
+
+<body>
+<!-- HEADER -->
+        <header class="block">
+          <ul class="header-menu horizontal-list">
+            <li>
+               <a class="header-menu-tab" href="#2"><span class="icon fontawesome-user scnd-font-color"></span>Feed</a>
+            </li>
+            <li>
+            <a class="header-menu-tab" href="#1"><span class="icon entypo-cog scnd-font-color"></span>Settings</a>
+             
+            </li>
+          </ul>
+          <div class="profile-menu">
+            <p>Me <a href="#26"><span class="entypo-down-open scnd-font-color"></span></a></p>
+            <div class="profile-picture small-profile-picture">
+              <img width="40px" alt="Profile Picture" src="http://www.clker.com/cliparts/f/a/0/c/1434020125875430376profile-hi.png">
+            </div>
+          </div>
+        </header>
+
+<br>
+<div class="header-container">
+<h3>
+  <b>
+    This will filter out/censor all or no messages with toxic content.
+  </b>
+</h3>
+</div>
+<
+<p>
+  <br>
+</p>
+<p><i>
+    Your setting . . .
+  </i>
+
+</p>
+
+<div class="center container">
+  <br />
+  <div class="toggle-button">
+    <button></button>
+  </div>
+  <br />
+</div>
+
+<div class="label-container">
+  <a>On</a>
+</div>
+<!--<div class="section-2">
+  <p>On <span class="first"></span></p>
+</div>-->
+
+<script type="text/javascript">
+  $(document).on('click', '.toggle-button', function() {
+  $(this).toggleClass('toggle-button-selected');
+});
+</script>
+
+</body>
+
