@@ -23,3 +23,6 @@ class Participant(models.Model):
     turker_id = models.CharField(max_length=100, blank=True, null=True)
     interface = models.ForeignKey(Interface, blank=True, null=True, on_delete=models.CASCADE)
 
+class ToggleSetting(models.Model):
+    filter_toxic = models.BooleanField(default = False)
+    participant = models.ForeignKey(Participant, on_delete=models.CASCADE)
