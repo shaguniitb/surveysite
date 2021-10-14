@@ -15,13 +15,21 @@ class Comment(models.Model):
     url = models.URLField(blank=True, null=True)
     twitter_id = models.CharField(blank=True, null=True, max_length=100)
 
-class Interface(models.Model):
-    name = models.CharField(max_length=100)
-
 class Participant(models.Model):
+
+    INTERFACE_CHOICES = (
+        ("1", "Toggle"),
+        ("2", "Word Filter"),
+        ("3", "Intensity Slider")
+    )
+
     username = models.CharField(max_length=100)
     turker_id = models.CharField(max_length=100, blank=True, null=True)
-    interface = models.ForeignKey(Interface, blank=True, null=True, on_delete=models.CASCADE)
+    setting = models.CharField(
+        max_length=2,
+        choices = INTERFACE_CHOICES,
+        default = "1"
+        )    
 
 class ToggleSetting(models.Model):
     participant = models.ForeignKey(Participant, on_delete=models.CASCADE)

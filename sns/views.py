@@ -3,7 +3,7 @@ from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect, reverse
 from django.template.loader import render_to_string
 from django.template import RequestContext
-from .models import Participant, ToggleSetting, WordFilterSetting, IntensitySliderSetting
+from .models import Comment, Participant, ToggleSetting, WordFilterSetting, IntensitySliderSetting
 from .forms import WfForm, IntensitySliderForm
 import json
 
@@ -13,7 +13,9 @@ def index(request):
     return HttpResponse("Hello, world. You're at the sns index.")
 
 def feed(request):
-    return render(request, "sns/feed.html", {})
+    participant = Participant.objects.get(id = 1)
+    comments = Comment.objects.all()
+    return render(request, "sns/feed.html", {'comments': comments})
 
 
 def toggle(request):
