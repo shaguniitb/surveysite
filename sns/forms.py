@@ -1,5 +1,5 @@
 from django import forms
-from .models import WordFilterSetting
+from .models import WordFilterSetting, IntensitySliderSetting
 
 class WfForm(forms.ModelForm):
     word_filters = forms.CharField(
@@ -15,3 +15,17 @@ class WfForm(forms.ModelForm):
     class Meta:
         model = WordFilterSetting
         fields = [ "word_filters"]    
+
+class IntensitySliderForm(forms.ModelForm):
+    slider_level = forms.CharField(
+        widget=forms.RadioSelect(
+            choices=IntensitySliderSetting.SLIDER_CHOICES,
+            attrs={
+            "class": "slider-input",
+            }            
+        )
+    )
+
+    class Meta:
+        model = IntensitySliderSetting
+        fields = [ "slider_level"]            

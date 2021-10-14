@@ -7,5 +7,5 @@ urlpatterns = [
     path('feed', views.feed, name='feed'),
     path('toggle', views.toggle, name='toggle'),
     path('wordfilter', views.wordfilter, name='wordfilter'),
-    path('slider', views.slider, name='slider'),
+    path('int_slider', views.int_slider, name='int_slider'),
 ]

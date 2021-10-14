@@ -3,8 +3,8 @@ from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect, reverse
 from django.template.loader import render_to_string
 from django.template import RequestContext
-from .models import Participant, ToggleSetting, WordFilterSetting
-from .forms import WfForm
+from .models import Participant, ToggleSetting, WordFilterSetting, IntensitySliderSetting
+from .forms import WfForm, IntensitySliderForm
 import json
 
 # Create your views here.
@@ -49,9 +49,26 @@ def wordfilter(request):
             return HttpResponse(json.dumps(response), content_type='application/json')
 
     else: 
-        form = WfForm()
+        form = WfForm(initial={'word_filters': wfSetting.word_filters})
         return render(request, "sns/wordfilter.html", {'form': form})    
 
 
-def slider(request):
-    return render(request, "sns/slider.html", {})        
+def int_slider(request):
+    participant = Participant.objects.get(id = 1)
+    sliderSetting, _ = IntensitySliderSetting.objects.get_or_create(participant = participant)    
+
+    if request.method == 'POST':
+        form = IntensitySliderForm(request.POST)
+        if form.is_valid():
+            slider_level = form.cleaned_data['slider_level']
+            sliderSetting.slider_level = slider_level
+            sliderSetting.save()
+            response = {
+                'message': 'Your changes have been saved.'
+            }
+
+            return HttpResponse(json.dumps(response), content_type='application/json')
+
+    else: 
+        form = IntensitySliderForm(initial={'slider_level': sliderSetting.slider_level})
+        return render(request, "sns/int_slider.html", {'form': form})    

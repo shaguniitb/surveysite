@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Comment, Interface, Participant, ToggleSetting, WordFilterSetting
+from .models import Comment, Interface, Participant, ToggleSetting, WordFilterSetting, IntensitySliderSetting
 
 # Register your models here.
 
@@ -8,3 +8,4 @@ admin.site.register(Interface)
 admin.site.register(Participant)
 admin.site.register(ToggleSetting)
 admin.site.register(WordFilterSetting)
+admin.site.register(IntensitySliderSetting)
