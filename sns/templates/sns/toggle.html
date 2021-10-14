@@ -40,8 +40,11 @@ $(document).ready(function() {
           csrfmiddlewaretoken: '{{ csrf_token }}'           
         },
         function(data){
-          console.log(data.message);
-          document.getElementById("result").innerText = data.message;
+          var self = document.getElementById("result");
+          self.innerText = data.message;
+          setTimeout(function() {
+              self.innerText = '';
+          }, 2000);                  
         }
       );
   });

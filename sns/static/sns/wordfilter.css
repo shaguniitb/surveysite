@@ -12,12 +12,8 @@
   border-bottom: 1px solid black;
   width: 640px;
   height: 100px;
+  margin-left: 20px;
 }
 /*.container {
 margin-left: 0px;
 }*/
-
-p.instruction {
-  margin-top: 20px;
-  margin-left: 25px;
-}

@@ -24,5 +24,9 @@ class Participant(models.Model):
     interface = models.ForeignKey(Interface, blank=True, null=True, on_delete=models.CASCADE)
 
 class ToggleSetting(models.Model):
-    filter_toxic = models.BooleanField(default = False)
     participant = models.ForeignKey(Participant, on_delete=models.CASCADE)
+    filter_toxic = models.BooleanField(default = False)
+
+class WordFilterSetting(models.Model):
+    participant = models.ForeignKey(Participant, on_delete=models.CASCADE)
+    word_filters = models.TextField(blank=True, null=True)

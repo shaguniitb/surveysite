@@ -16,19 +16,41 @@
   <div class="togglediv block">
     <h1 class="titular"><span class="icon"></span>Choose Your Word Filters</h1>
     <div class="togglequestion">
-
       <h2>  Enter comma-separated values:  </h2>
-
-      <div>
-        <div class="search-input">
-          <input class="textFilter-input" placeholder="Eg. Apple, Orange, Pear" />
-        </div>
-      </div>
+      <form action="" method="post" id="wf-form">
+        {% csrf_token %}
+        <formgroup>
+          {{ form.word_filters.errors }}
+          
+          {{ form.word_filters }}
+        </formgroup>
+        <input type="submit" class="btn btn-primary" value="Submit" />
+      </form>
+      <div class="result"><span id="result"></span></div>
       <p class="instruction">  Comments closely matching these words will be filtered out of your feed.  </p>
-
     </div>
+
   </div>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.js"></script> 
+<script type="text/javascript">
+$(document).ready(function() {
+  $('#wf-form').submit(function(e){
+    console.log("came here");
+    $.post("{% url 'wordfilter' %}", 
+      $(this).serialize(), 
+      function(data){
+        var self = document.getElementById("result");
+        self.innerText = data.message;
+        setTimeout(function() {
+            self.innerText = '';
+        }, 2000);        
+      });
+     e.preventDefault();
+   });
+}); 
+</script> -->
 
 
 {% endblock content %}

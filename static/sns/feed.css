@@ -498,3 +498,8 @@ header {
 .result span{
   background-color: coral
 }
+
+p.instruction {
+  margin-top: 20px;
+  margin-left: 25px;
+}
