@@ -70,7 +70,7 @@ h1 {
 }
 
 h2 {
-  font-size: 17px;
+  font-size: 20px;
   color: white;
 }
 
@@ -268,7 +268,7 @@ input[type=text]:focus {
 .main-container {
   font-family: 'Ubuntu', sans-serif;
   width: 950px;
-  height: 1725px;
+  /*height: 1725px;*/
   margin: 6em auto;
 }
 
@@ -473,7 +473,7 @@ header {
 }
 
 .togglediv{
-  height: 200px;
+  /*height: 200px;*/
   border-bottom: 1px solid #1f253d;
   color:  white;
 }
@@ -489,4 +489,12 @@ header {
 
 .togglequestion {
   margin: 20px;
+}
+
+.result{
+  text-align: center;
+}
+
+.result span{
+  background-color: coral
 }

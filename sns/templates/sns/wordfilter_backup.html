@@ -1,0 +1,75 @@
+{% extends "sns/page_base_minimal.html" %}
+
+
+{% load static %}
+
+{% block scripts %}
+<link rel="stylesheet" href="{% static 'sns/wordfilter.css' %}">
+<script type="text/javascript" src="{% static 'sns/wordfilter.js' %}"></script>
+{% endblock scripts %}
+
+{% block content %}
+<!-- HEADER -->
+        <header class="block">
+          <ul class="header-menu horizontal-list">
+            <li>
+               <a class="header-menu-tab" href="#2"><span class="icon fontawesome-user scnd-font-color"></span>Feed</a>
+            </li>
+            <li>
+            <a class="header-menu-tab" href="#1"><span class="icon entypo-cog scnd-font-color"></span>Settings</a>
+             
+            </li>
+          </ul>
+          <div class="profile-menu">
+            <p>Me <a href="#26"><span class="entypo-down-open scnd-font-color"></span></a></p>
+            <div class="profile-picture small-profile-picture">
+              <img width="40px" alt="Profile Picture" src="http://www.clker.com/cliparts/f/a/0/c/1434020125875430376profile-hi.png">
+            </div>
+          </div>
+        </header>
+
+
+<br>
+<div class="header-container">
+<h3>
+  <b>
+    Word Filter
+  </b>
+</h3>
+</div>
+
+<p>
+
+
+</p>
+<p><i>
+    Comments closely matching these words will be filtered out of your feed.
+  </i>
+
+  <div class="container">
+    <div class="search-input">
+      <input class="textFilter-input" placeholder="Eg. Apple, Orange, Pear" />
+    </div>
+    <!--
+  <div class="textFilter-target">
+  <span class="textFilter-match">This is a text sample with unique string Lorem</span>
+  </div>
+  <div class="textFilter-target">
+  <span class="textFilter-match">This is a text sample with unique string Ipsum</span>
+  </div>
+  <div class="textFilter-target">
+  <span class="textFilter-match">This is a text sample with unique string Dolor</span>
+  </div>
+  <div class="textFilter-target">
+  <span class="textFilter-match">This is a text sample with unique string Sit</span>
+  </div>
+  <div class="textFilter-target">
+  <span class="textFilter-match">This is a text sample with unique string Amet</span>
+  </div>
+</div>-->
+
+
+
+
+{% endblock content %}
+

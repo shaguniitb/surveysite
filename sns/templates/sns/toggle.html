@@ -16,14 +16,14 @@
     <h1 class="titular"><span class="icon"></span>Choose Your Moderation Setting</h1>
     <div class="togglequestion">
 
-        <div class="result"><span id="result"></span></div>
-
       <h2>  Your setting for toxic content:  </h2>
 
       <div class="form-check form-switch">
         <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" {% if toggleSetting.filter_toxic %} checked {% endif %} />
         <label class="form-check-label" style="color:white" for="flexSwitchCheckChecked">Filter out/censor all or no messages with toxic content</label>
       </div>
+
+        <div class="result"><span id="result"></span></div>
     </div>
 
   </div>
