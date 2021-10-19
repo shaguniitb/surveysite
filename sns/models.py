@@ -29,7 +29,7 @@ class Participant(models.Model):
         max_length=2,
         choices = INTERFACE_CHOICES,
         default = "1"
-        )    
+        )
 
 class ToggleSetting(models.Model):
     participant = models.ForeignKey(Participant, on_delete=models.CASCADE)
@@ -39,20 +39,17 @@ class WordFilterSetting(models.Model):
     participant = models.ForeignKey(Participant, on_delete=models.CASCADE)
     word_filters = models.TextField(blank=True, null=True)
 
-class IntensitySliderSetting(models.Model):
+class SliderSetting(models.Model):
 
-    SLIDER_CHOICES = (
-        ("1", "No Moderation"),
-        ("2", "A Little Moderation"),
-        ("3", "Some Moderation"),
-        ("4", "More Moderation"),
-        ("5", "A Lot of Moderation"),
-    )
+    class SliderChoices(models.IntegerChoices):
+      NONE = 1
+      A_LITTLE = 2
+      SOME = 3
+      MORE = 4
+      A_LOT = 5
 
-    slider_level = models.CharField(
-        max_length=2,
-        choices = SLIDER_CHOICES,
-        default = "1"
+    slider_level = models.IntegerField(
+        choices = SliderChoices.choices,
+        default = 1
     )
     participant = models.ForeignKey(Participant, on_delete=models.CASCADE)
-    

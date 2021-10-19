@@ -3,8 +3,8 @@ from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect, reverse
 from django.template.loader import render_to_string
 from django.template import RequestContext
-from .models import Comment, Participant, ToggleSetting, WordFilterSetting, IntensitySliderSetting
-from .forms import WfForm, IntensitySliderForm
+from .models import Comment, Participant, ToggleSetting, WordFilterSetting, SliderSetting
+from .forms import WfForm, SliderForm
 import json
 
 # Create your views here.
@@ -20,7 +20,7 @@ def feed(request):
 
 def toggle(request):
     participant = Participant.objects.get(id = 1)
-    toggleSetting, _ = ToggleSetting.objects.get_or_create(participant = participant)    
+    toggleSetting, _ = ToggleSetting.objects.get_or_create(participant = participant)
     if request.method =='POST':
         post_value = request.POST['filter_toxic']
         toggleSetting.filter_toxic = post_value == 'true'
@@ -29,12 +29,12 @@ def toggle(request):
             'message': 'Your changes have been saved.'
         }
         return HttpResponse(json.dumps(response), content_type='application/json')
-    else: 
-        return render(request, "sns/toggle.html", {'toggleSetting': toggleSetting})    
+    else:
+        return render(request, "sns/toggle.html", {'toggleSetting': toggleSetting})
 
 def wordfilter(request):
     participant = Participant.objects.get(id = 1)
-    wfSetting, _ = WordFilterSetting.objects.get_or_create(participant = participant)    
+    wfSetting, _ = WordFilterSetting.objects.get_or_create(participant = participant)
 
     if request.method == 'POST':
         # create a form instance and populate it with data from the request:
@@ -50,17 +50,17 @@ def wordfilter(request):
 
             return HttpResponse(json.dumps(response), content_type='application/json')
 
-    else: 
+    else:
         form = WfForm(initial={'word_filters': wfSetting.word_filters})
-        return render(request, "sns/wordfilter.html", {'form': form})    
+        return render(request, "sns/wordfilter.html", {'form': form})
 
 
 def int_slider(request):
     participant = Participant.objects.get(id = 1)
-    sliderSetting, _ = IntensitySliderSetting.objects.get_or_create(participant = participant)    
+    sliderSetting, _ = SliderSetting.objects.get_or_create(participant = participant)
 
     if request.method == 'POST':
-        form = IntensitySliderForm(request.POST)
+        form = SliderForm(request.POST)
         if form.is_valid():
             slider_level = form.cleaned_data['slider_level']
             sliderSetting.slider_level = slider_level
@@ -71,6 +71,6 @@ def int_slider(request):
 
             return HttpResponse(json.dumps(response), content_type='application/json')
 
-    else: 
-        form = IntensitySliderForm(initial={'slider_level': sliderSetting.slider_level})
-        return render(request, "sns/int_slider.html", {'form': form})    
+    else:
+        form = SliderForm(initial={'value': sliderSetting.slider_level})
+        return render(request, "sns/int_slider.html", {'form': form})
