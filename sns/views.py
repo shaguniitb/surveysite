@@ -28,6 +28,14 @@ def get_matched_comment_ids(word_filters):
             matched_comment_ids.append(comment.id)  
     return matched_comment_ids
 
+def settingsPage(setting):
+    if (setting == "1"):
+        return HttpResponseRedirect(reverse('sns:toggle'))
+    elif (setting == "2"):
+        return HttpResponseRedirect(reverse('sns:wordfilter'))  
+    elif (setting == "3"):
+        return HttpResponseRedirect(reverse('sns:int_slider'))                                    
+
 def interface(request):
     participant = Participant.objects.get(id = 1)
 
@@ -39,16 +47,15 @@ def interface(request):
             setting = form.cleaned_data['setting']
             participant.setting = setting
             participant.save()
-            if (setting == "1"):
-                return HttpResponseRedirect(reverse('sns:toggle'))
-            elif (setting == "2"):
-                return HttpResponseRedirect(reverse('sns:wordfilter'))  
-            elif (setting == "3"):
-                return HttpResponseRedirect(reverse('sns:int_slider'))                                
-
+            return settingsPage(setting)
     else:
         form = InterfaceForm(initial={'setting': participant.setting})
         return render(request, "sns/interface.html", {'form': form})    
+
+def settings(request):
+    participant = Participant.objects.get(id = 1)
+    setting = participant.setting
+    return settingsPage(setting)
 
 def feed(request):
     participant = Participant.objects.get(id = 1)

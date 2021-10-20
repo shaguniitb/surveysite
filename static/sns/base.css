@@ -327,6 +327,10 @@ header {
 
 }
 
+.header-menu-right{
+    li{float:left; width:auto;}
+}
+
 .profile-menu {
   float: right;
   height: 80px;
