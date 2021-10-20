@@ -5,16 +5,66 @@ from django.template.loader import render_to_string
 from django.template import RequestContext
 from .models import Comment, Participant, ToggleSetting, WordFilterSetting, SliderSetting
 from .forms import WfForm, SliderForm
-import json
+import json, re
 
 # Create your views here.
 
 def index(request):
     return HttpResponse("Hello, world. You're at the sns index.")
 
+def get_matched_comment_ids(word_filters):
+    comments = Comment.objects.all()
+    if (word_filters == '' or word_filters is None):
+        return [comment.id for comment in comments]
+    matched_comment_ids = []
+    for comment in comments:
+        lookups = []
+        rules = word_filters.strip().split(',')
+        for rule in rules:
+            lookup = re.search(r'\b({})\b'.format(rule), comment.text, re.IGNORECASE)
+            lookups.append(lookup)
+        if ('Aaron' in comment.text):
+            print (comment.text)
+        if any(lookups):
+            matched_comment_ids.append(comment.id)  
+    return matched_comment_ids
+
 def feed(request):
     participant = Participant.objects.get(id = 1)
-    comments = Comment.objects.all()
+    if (participant.setting == "1"):
+        participant.resetWordFilter()
+        participant.resetSlider()
+        toggleSetting, _ = ToggleSetting.objects.get_or_create(participant = participant)
+        filter_toxic = toggleSetting.filter_toxic
+        if (filter_toxic):
+            comments = Comment.objects.filter(perspective_score__lte = 0.8)
+        else:
+            comments = Comment.objects.all()
+
+    elif (participant.setting == "2"):
+        participant.resetToggle()
+        participant.resetSlider()        
+        wordFilterSetting, _ = WordFilterSetting.objects.get_or_create(participant = participant)
+        word_filters = wordFilterSetting.word_filters
+        matched_comment_ids = get_matched_comment_ids(word_filters)
+        print ("matched: ", matched_comment_ids)
+        comments = Comment.objects.exclude(id__in = matched_comment_ids)
+
+    elif (participant.setting == "3"):
+        participant.resetToggle()
+        participant.resetWordFilter()  
+        sliderSetting, _ = SliderSetting.objects.get_or_create(participant = participant)
+        slider_level = sliderSetting.slider_level
+        if (slider_level == 1):
+            comments = Comment.objects.all()
+        elif (slider_level == 2):
+            comments = Comment.objects.filter(perspective_score__lte = 0.8)                    
+        elif (slider_level == 3):
+            comments = Comment.objects.filter(perspective_score__lte = 0.6)
+        elif (slider_level == 4):
+            comments = Comment.objects.filter(perspective_score__lte = 0.4)
+        elif (slider_level == 5):
+            comments = Comment.objects.filter(perspective_score__lte = 0.2)                                                        
     return render(request, "sns/feed.html", {'comments': comments})
 
 

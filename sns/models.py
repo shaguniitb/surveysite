@@ -31,6 +31,21 @@ class Participant(models.Model):
         default = "1"
         )
 
+    def resetToggle(self):
+        toggleSetting, _ = ToggleSetting.objects.get_or_create(participant = self)
+        toggleSetting.filter_toxic = False
+        toggleSetting.save()
+
+    def resetWordFilter(self):
+        wordFilterSetting, _ = WordFilterSetting.objects.get_or_create(participant = self)
+        wordFilterSetting.word_filters = ''
+        wordFilterSetting.save()       
+
+    def resetSlider(self):
+        sliderSetting, _ = SliderSetting.objects.get_or_create(participant = self)
+        sliderSetting.slider_level = 1
+        sliderSetting.save()                
+
 class ToggleSetting(models.Model):
     participant = models.ForeignKey(Participant, on_delete=models.CASCADE)
     filter_toxic = models.BooleanField(default = False)
