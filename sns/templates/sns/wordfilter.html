@@ -24,7 +24,7 @@
           
           {{ form.word_filters }}
         </formgroup>
-        <input type="submit" class="btn btn-primary" value="Submit" />
+        <input type="submit" class="btn btn-primary save-button" value="Save" />
       </form>
       <div class="result"><span id="result"></span></div>
       <p class="instruction">  Comments closely matching these words will be filtered out of your feed.  </p>
@@ -37,8 +37,7 @@
 <script type="text/javascript">
 $(document).ready(function() {
   $('#wf-form').submit(function(e){
-    console.log("came here");
-    $.post("{% url 'wordfilter' %}", 
+    $.post("{% url 'sns:wordfilter' %}", 
       $(this).serialize(), 
       function(data){
         var self = document.getElementById("result");

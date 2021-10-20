@@ -1,7 +1,7 @@
 from django import forms
 
 from .widgets import RangeInput
-from .models import WordFilterSetting, SliderSetting
+from .models import Participant, WordFilterSetting, SliderSetting
 
 
 class WfForm(forms.ModelForm):
@@ -25,3 +25,14 @@ class SliderForm(forms.ModelForm):
   class Meta:
     model = SliderSetting
     fields = [ "slider_level" ]
+
+class InterfaceForm(forms.ModelForm):
+  setting = forms.CharField(
+    widget=forms.RadioSelect(
+      choices = Participant.INTERFACE_CHOICES
+      ),
+  )  
+
+  class Meta:
+    model = Participant
+    fields = [ "setting" ]    

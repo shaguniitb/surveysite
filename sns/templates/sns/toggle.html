@@ -35,7 +35,7 @@
 <script type="text/javascript">
 $(document).ready(function() {
   $('#flexSwitchCheckChecked').change(function() {
-      $.post("{% url 'toggle' %}", {
+      $.post("{% url 'sns:toggle' %}", {
           filter_toxic: this.checked, 
           csrfmiddlewaretoken: '{{ csrf_token }}'           
         },

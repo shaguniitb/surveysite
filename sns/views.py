@@ -1,10 +1,10 @@
 from django.shortcuts import render
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.shortcuts import redirect, reverse
 from django.template.loader import render_to_string
 from django.template import RequestContext
 from .models import Comment, Participant, ToggleSetting, WordFilterSetting, SliderSetting
-from .forms import WfForm, SliderForm
+from .forms import WfForm, SliderForm, InterfaceForm
 import json, re
 
 # Create your views here.
@@ -21,13 +21,34 @@ def get_matched_comment_ids(word_filters):
         lookups = []
         rules = word_filters.strip().split(',')
         for rule in rules:
+            rule = rule.strip()
             lookup = re.search(r'\b({})\b'.format(rule), comment.text, re.IGNORECASE)
             lookups.append(lookup)
-        if ('Aaron' in comment.text):
-            print (comment.text)
         if any(lookups):
             matched_comment_ids.append(comment.id)  
     return matched_comment_ids
+
+def interface(request):
+    participant = Participant.objects.get(id = 1)
+
+    if request.method == 'POST':
+        # create a form instance and populate it with data from the request:
+        form = InterfaceForm(request.POST)
+        # check whether it's valid:
+        if form.is_valid():
+            setting = form.cleaned_data['setting']
+            participant.setting = setting
+            participant.save()
+            if (setting == "1"):
+                return HttpResponseRedirect(reverse('sns:toggle'))
+            elif (setting == "2"):
+                return HttpResponseRedirect(reverse('sns:wordfilter'))  
+            elif (setting == "3"):
+                return HttpResponseRedirect(reverse('sns:int_slider'))                                
+
+    else:
+        form = InterfaceForm(initial={'setting': participant.setting})
+        return render(request, "sns/interface.html", {'form': form})    
 
 def feed(request):
     participant = Participant.objects.get(id = 1)
@@ -47,7 +68,6 @@ def feed(request):
         wordFilterSetting, _ = WordFilterSetting.objects.get_or_create(participant = participant)
         word_filters = wordFilterSetting.word_filters
         matched_comment_ids = get_matched_comment_ids(word_filters)
-        print ("matched: ", matched_comment_ids)
         comments = Comment.objects.exclude(id__in = matched_comment_ids)
 
     elif (participant.setting == "3"):

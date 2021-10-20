@@ -38,7 +38,7 @@
 $(document).ready(function() {
   $('#slider-form').submit(function(e){
     console.log("came here");
-    $.post("{% url 'int_slider' %}",
+    $.post("{% url 'sns:int_slider' %}",
       $(this).serialize(),
       function(data){
         var self = document.getElementById("result");
