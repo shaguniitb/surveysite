@@ -4,13 +4,51 @@ from django.shortcuts import redirect, reverse
 from django.template.loader import render_to_string
 from django.template import RequestContext
 from .models import Comment, Participant, ToggleSetting, WordFilterSetting, SliderSetting
-from .forms import WfForm, SliderForm, InterfaceForm
+from .forms import WfForm, SliderForm, InterfaceForm, NewUserForm, ParticipantForm
 import json, re
 
 # Create your views here.
 
-def index(request):
-    return HttpResponse("Hello, world. You're at the sns index.")
+# def index(request):
+#     return HttpResponse("Hello, world. You're at the sns index.")
+
+def is_new_user(request):
+    if request.method == 'POST':
+        form = NewUserForm(request.POST)
+        if form.is_valid():     
+            is_new_user = form.cleaned_data['is_new_user']
+            if (is_new_user == True):
+                participant = Participant.objects.create()
+                request.session['participant_id'] = participant.id
+                return HttpResponseRedirect(reverse('sns:feed'))                
+            else:
+                return HttpResponseRedirect(reverse('sns:get_user'))
+    form = NewUserForm(initial={'is_new_user': True})
+    return render(request, "sns/is_new_user.html", {'form': form})    
+
+def get_user(request):
+    if request.method == 'POST':
+        form = ParticipantForm(request.POST)
+        if form.is_valid():
+            if ('id' in form.cleaned_data):
+                participant_id = form.cleaned_data['id']
+                participant = Participant.objects.get(id = participant_id)
+                request.session['participant_id'] = participant.id
+                return HttpResponseRedirect(reverse('sns:feed'))            
+            else: 
+                return HttpResponseRedirect(reverse('sns:get_user'))                  
+    form = ParticipantForm()
+    return render(request, "sns/get_user.html", {'form': form})    
+
+
+
+def getParticipantFromSession(request):
+    print (request.session.get('participant_id'))
+    try:
+        participant = Participant.objects.get(id=request.session['participant_id'])
+    except (KeyError, Participant.DoesNotExist):
+        participant = None    
+    return participant
 
 def get_matched_comment_ids(word_filters):
     comments = Comment.objects.all()
@@ -37,7 +75,7 @@ def settingsPage(setting):
         return HttpResponseRedirect(reverse('sns:int_slider'))                                    
 
 def interface(request):
-    participant = Participant.objects.get(id = 1)
+    participant = getParticipantFromSession(request)
 
     if request.method == 'POST':
         # create a form instance and populate it with data from the request:
@@ -53,12 +91,12 @@ def interface(request):
         return render(request, "sns/interface.html", {'form': form})    
 
 def settings(request):
-    participant = Participant.objects.get(id = 1)
+    participant = getParticipantFromSession(request)
     setting = participant.setting
     return settingsPage(setting)
 
 def feed(request):
-    participant = Participant.objects.get(id = 1)
+    participant = getParticipantFromSession(request)
     if (participant.setting == "1"):
         participant.resetWordFilter()
         participant.resetSlider()
@@ -96,7 +134,7 @@ def feed(request):
 
 
 def toggle(request):
-    participant = Participant.objects.get(id = 1)
+    participant = getParticipantFromSession(request)
     toggleSetting, _ = ToggleSetting.objects.get_or_create(participant = participant)
     if request.method =='POST':
         post_value = request.POST['filter_toxic']
@@ -110,7 +148,7 @@ def toggle(request):
         return render(request, "sns/toggle.html", {'toggleSetting': toggleSetting})
 
 def wordfilter(request):
-    participant = Participant.objects.get(id = 1)
+    participant = getParticipantFromSession(request)
     wfSetting, _ = WordFilterSetting.objects.get_or_create(participant = participant)
 
     if request.method == 'POST':
@@ -133,7 +171,7 @@ def wordfilter(request):
 
 
 def int_slider(request):
-    participant = Participant.objects.get(id = 1)
+    participant = getParticipantFromSession(request)
     sliderSetting, _ = SliderSetting.objects.get_or_create(participant = participant)
 
     if request.method == 'POST':

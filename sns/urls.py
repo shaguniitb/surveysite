@@ -4,7 +4,8 @@ from . import views, create_tables
 
 app_name = 'sns'
 urlpatterns = [
-    path('', views.index, name='index'),
+    path('', views.is_new_user, name='is_new_user'),
+    path('get_user', views.get_user, name='get_user'),
     path('interface', views.interface, name='interface'),
     path('settings', views.settings, name='settings'),
     path('feed', views.feed, name='feed'),

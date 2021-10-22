@@ -1,0 +1,35 @@
+{% extends "sns/page_base.html" %}
+
+
+{% load static %}
+
+{% block scripts %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+<link rel="stylesheet" href="{% static 'sns/wordfilter.css' %}">
+{% endblock scripts %}
+
+{% block content %}
+
+<!-- MIDDLE-CONTAINER -->
+<div class="middle-container container">
+  <div class="togglediv block">
+    <h1 class="titular"><span class="icon"></span>Enter Your User ID</h1>
+    <div class="togglequestion">
+      <h2>  My User ID:  </h2>
+      <form action="" method="post" id="wf-form">
+        {% csrf_token %}
+        <formgroup>
+          {{ form.id.errors }}
+          
+          {{ form.id }}
+        </formgroup>
+        <input type="submit" class="btn btn-primary save-button" value="Submit" />
+      </form>
+    </div>
+
+  </div>
+</div>
+
+
+{% endblock content %}
+

@@ -23,7 +23,7 @@ class Participant(models.Model):
         ("3", "Intensity Slider")
     )
 
-    username = models.CharField(max_length=100)
+    username = models.CharField(max_length=100, blank=True, null=True)
     turker_id = models.CharField(max_length=100, blank=True, null=True)
     setting = models.CharField(
         max_length=2,

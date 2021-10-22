@@ -3,6 +3,22 @@ from django import forms
 from .widgets import RangeInput
 from .models import Participant, WordFilterSetting, SliderSetting
 
+class NewUserForm(forms.Form):
+  is_new_user = forms.BooleanField(
+    required = False,
+    widget=forms.CheckboxInput(
+      attrs={
+      "class": "form-check-input",
+      }
+      ),
+  )    
+
+class ParticipantForm(forms.ModelForm):
+  id = forms.CharField()
+  class Meta:
+    model = Participant
+    fields = [ "id", "username", "turker_id" ]      
+
 
 class WfForm(forms.ModelForm):
   word_filters = forms.CharField(
