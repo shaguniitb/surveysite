@@ -12,30 +12,27 @@
     <div class="tweets block">
       <!-- SOCIAL MEDIA FEED -->
       <h1 class="titular"><span class="icon"></span>Latest Posts</h1>
-<!--       <div class="tweet first">
-        <p>#Packers QB Aaron Rodgers has indicated to people close to him that he does plan to play for GB this season, sources say. That is the expectation. Many factors at play, but with GM Brian Gutekunst saying he is “hopeful” for a positive outcome, there is a glimmer of optimism. <a class="time-ago scnd-font-color" href="#18">3 minutes ago</a></p>
-        <a class="post-picture post-profile-picture"><span>
-            <img width="40px" alt="Profile Picture" src="http://www.clker.com/cliparts/f/a/0/c/1434020125875430376profile-hi.png"> </span>
-
-          <p> <a class="profile-tweet-link" href="#17">@eq0h4lu </a></p>
-        </a>
-
-      </div> -->
-
       {% for comment in comments %}
-      <div class="tweet first">
-        <p> 
-          {{comment.text}}  <a class="time-ago scnd-font-color" href="#18">10 minutes ago</a>
-        </p>
-        <a class="post-picture post-profile-picture"><span>
-            <img width="40px" alt="Profile Picture" src="http://www.clker.com/cliparts/f/a/0/c/1434020125875430376profile-hi.png"> </span>
-
-          <p> <a class="profile-tweet-link" href="#17">@{{ comment.author }} </a></p>
-        </a>        
+      <div class="tweet">
+        <div class="profile">
+          <img class="profile-picture" alt="Profile Picture" src="http://www.clker.com/cliparts/f/a/0/c/1434020125875430376profile-hi.png">
+        </div>
+        <div class="tweet-body">
+          <div class="metadata">
+            <a class="" href="">
+              {{ comment.author }}
+              <span class="handle">@{{ comment.author }}</span>
+              <span class="time-ago scnd-font-color">10 minutes ago</span>
+            </a>
+          </div>
+          <div class="content">
+            <p>
+              {{comment.text}}
+            </p>
+          </div>
+        </div>
       </div>
       {% endfor %}
-
     </div>
   </div>
 {% endblock content %}
-

@@ -1,4 +1,4 @@
-/** Inspired by: http://graphicburger.com/flat-design-ui-components/ 
+/** Inspired by: http://graphicburger.com/flat-design-ui-components/
 
 source: https://codepen.io/jlalovi/pen/bIyAr**/
 
@@ -57,6 +57,7 @@ source: https://codepen.io/jlalovi/pen/bIyAr**/
 
 body {
   background: #1f253d;
+  line-height: 1;
 }
 
 ul {
@@ -75,12 +76,12 @@ h2 {
 }
 
 p {
-  font-size: 15px;
+  font-size: 16px;
 }
 
 a {
   text-decoration: none;
-  font-size: 15px;
+  font-size: 16px;
 }
 
 a:hover {
@@ -175,7 +176,7 @@ input[type=text]:focus {
 
 .titular {
   display: block;
-  line-height: 60px;
+  line-height: 40px;
   margin: 0;
   text-align: center;
   border-top-left-radius: 5px;
@@ -267,19 +268,18 @@ input[type=text]:focus {
 
 .main-container {
   font-family: 'Ubuntu', sans-serif;
-  width: 950px;
-  /*height: 1725px;*/
-  margin: 6em auto;
+  width: 75%;
+  margin: 1em auto;
 }
 
 /*********************************************** HEADER ***********************************************/
 header {
-  height: 80px;
+  height: 60px;
 }
 
 .header-menu {
   font-size: 17px;
-  line-height: 80px;
+  line-height: 60px;
 }
 
 .header-menu li {
@@ -289,9 +289,9 @@ header {
 }
 
 .header-menu-tab {
-  padding: 0 27px;
+  padding: 0 14px;
   display: block;
-  line-height: 74px;
+  line-height: 48px;
   font-size: 17px;
   -webkit-transition: background .3s;
   transition: background .3s;
@@ -334,14 +334,14 @@ header {
 
 .profile-menu {
   float: right;
-  height: 80px;
+  height: 60px;
   padding-right: 20px;
 }
 
 .profile-menu p {
   font-size: 17px;
   display: inline-block;
-  line-height: 76px;
+  line-height: 56px;
   margin: 0;
   padding-right: 10px;
 }
@@ -361,9 +361,7 @@ header {
 
 /** CONTAINERS **/
 .container {
-  float: left;
-  width: 850px;
- 
+
 }
 
 .block {
@@ -376,7 +374,6 @@ header {
 .middle-container {
   margin: 0 25px 0 50px;
 }
-
 
 .post-profile-picture {
   position: absolute;
@@ -408,11 +405,7 @@ header {
   border-color: #e64c65;
 }
 
-
-/*.tweets {
-  height: 1730px;
-}*/
-
+/** Tweet Feed styling **/
 .tweets .titular {
   background: #35aadc;
 }
@@ -422,48 +415,31 @@ header {
   padding-right: 20px;
 }
 
-.tweet.first {
-  height: 170px;
+/** Tweet styling **/
+.tweet {
+  padding: 10px;
   border-bottom: 1px solid #1f253d;
 }
 
-.tweet.second {
-  height: 140px;
-  border-bottom: 1px solid #1f253d;
+.tweet::after {
+  content: '';
+  clear: both;
+  display: table;
 }
-.tweet.third {
-  height: 170px;
-  border-bottom: 1px solid #1f253d;
+
+.tweet .profile {
+  float: left;
+  width: 50px;
 }
-.tweet.fourth {
-  height: 150px;
-  border-bottom: 1px solid #1f253d;
+
+.tweet .profile img.profile-picture {
+  width: 40px;
+  height: 40px;
 }
-.tweet.fifth {
-  height: 160px;
-  border-bottom: 1px solid #1f253d;
+
+.tweet .tweet-body {
 }
-.tweet.sixth {
-  height: 160px;
-  border-bottom: 1px solid #1f253d;
-}
-.tweet.seventh {
-  height: 160px;
-  border-bottom: 1px solid #1f253d;
-}
-.tweet.eighth {
-  height: 130px;
-  border-bottom: 1px solid #1f253d;
-}
-.tweet.ninth {
-  height: 130px;
-  border-bottom: 1px solid #1f253d;
-}
-.tweet.tenth {
-  height: 140px;
-  border-bottom: 1px solid #1f253d;
-}
-.tweet p:first-child {
+.tweet .body:first-child {
   margin: 0;
   padding: 30px 30px 0;
 }
@@ -473,11 +449,11 @@ header {
   padding: 15px 30px 0;
 }
 
-.tweet-link {
+.tweet a {
   color: #4fc4f6;
 }
 
-.togglediv{
+.togglediv {
   /*height: 200px;*/
   border-bottom: 1px solid #1f253d;
   color:  white;

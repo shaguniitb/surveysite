@@ -2,18 +2,15 @@
 {% load static %}
 <html lang="en">
 <head>
-
   <title> Your Social Network Site</title>
 
   <!-- internal libraries -->
   {% block scripts %}
   {% endblock scripts %}
-<link rel="stylesheet" href="{% static 'sns/base.css' %}">    
+  <link rel="stylesheet" href="{% static 'sns/base.css' %}">
 </head>
 <body>
-
   <div class="main-container">
-
     <!-- HEADER -->
     <header class="block">
       <ul class="header-menu horizontal-list">
@@ -21,11 +18,11 @@
            <a class="header-menu-tab" href="{% url 'sns:feed' %}"><span class="icon fontawesome-user scnd-font-color"></span>Feed</a>
         </li>
          <li>
-          <a class="header-menu-tab" href="{% url 'sns:settings' %}"><span class="icon entypo-cog scnd-font-color"></span>Settings</a>           
-        </li>        
-         <li style="padding-left:20em">
-          <a class="header-menu-tab" href="{% url 'sns:interface' %}"><span class="icon fontawesome-cogs scnd-font-color"></span>Interface</a>           
-        </li>                
+          <a class="header-menu-tab" href="{% url 'sns:settings' %}"><span class="icon entypo-cog scnd-font-color"></span>Settings</a>
+        </li>
+         <li>
+          <a class="header-menu-tab" href="{% url 'sns:interface' %}"><span class="icon fontawesome-cogs scnd-font-color"></span>Interface</a>
+        </li>
       </ul>
       <div class="profile-menu">
         <p>Me <a href="#26"><span class="entypo-down-open scnd-font-color"></span></a></p>
@@ -33,11 +30,10 @@
           <img width="40px" alt="Profile Picture" src="http://www.clker.com/cliparts/f/a/0/c/1434020125875430376profile-hi.png">
         </div>
       </div>
-    </header>  
+    </header>
 
-  {% block content %}
-  {% endblock content %}
-</div>
-
+    {% block content %}
+    {% endblock content %}
+  </div>
 </body>
 </html>

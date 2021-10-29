@@ -1,6 +1,5 @@
 from django import forms
-
-from .widgets import RangeInput
+from .widgets import SemanticScale
 from .models import Participant, WordFilterSetting, SliderSetting
 
 class NewUserForm(forms.Form):
@@ -10,14 +9,14 @@ class NewUserForm(forms.Form):
       attrs={
       "class": "form-check-input",
       }
-      ),
-  )    
+    ),
+  )
 
 class ParticipantForm(forms.ModelForm):
   id = forms.CharField()
   class Meta:
     model = Participant
-    fields = [ "id", "username", "turker_id" ]      
+    fields = [ "id", "username", "turker_id" ]
 
 
 class WfForm(forms.ModelForm):
@@ -35,8 +34,12 @@ class WfForm(forms.ModelForm):
     model = WordFilterSetting
     fields = [ "word_filters" ]
 
-class SliderForm(forms.ModelForm):
-  slider_level = forms.IntegerField(widget = RangeInput)
+class SemanticSliderForm(forms.ModelForm):
+  slider_level = forms.IntegerField(
+    widget = SemanticScale,
+    max_value = 5,
+    min_value = 1
+  )
 
   class Meta:
     model = SliderSetting
@@ -46,9 +49,9 @@ class InterfaceForm(forms.ModelForm):
   setting = forms.CharField(
     widget=forms.RadioSelect(
       choices = Participant.INTERFACE_CHOICES
-      ),
-  )  
+    ),
+  )
 
   class Meta:
     model = Participant
-    fields = [ "setting" ]    
+    fields = [ "setting" ]
