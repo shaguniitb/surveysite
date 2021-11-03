@@ -40,8 +40,6 @@ def get_user(request):
   form = ParticipantForm()
   return render(request, "sns/get_user.html", {'form': form})
 
-
-
 def getParticipantFromSession(request):
   print (request.session.get('participant_id'))
   try:
