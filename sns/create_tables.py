@@ -4,16 +4,14 @@ from django.http import HttpResponse, JsonResponse
 import json
 from django.utils import timezone
 
-
-def create_tables(request):
-    df = pd.read_csv("./input.csv")
+def fill_tables_from_csv(filename):
+    df = pd.read_csv(filename)
     for index, row in df.iterrows():
         text = row['comment']
         perspective_score = row['perspective_score']
-        toxicity_score = row['avg_rating']
-        author = 'tester'
+        toxicity_score = row['avg_toxic_score']
+        author = row['author']
         pub_date = timezone.now()
-        print (perspective_score)
         comment, created = Comment.objects.update_or_create(
             text = text,
             defaults = {
@@ -22,7 +20,12 @@ def create_tables(request):
                 'author': author,
                 'pub_date': pub_date,
             }
-        )
+        )    
+
+
+def create_tables(request):
+    fill_tables_from_csv("./main_comments.csv")
+    fill_tables_from_csv("./nontoxic_comments.csv")
 
     response = {
         'message': 'Tables saved'
