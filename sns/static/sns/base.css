@@ -372,7 +372,8 @@ header {
 
 /************************************************** MIDDLE CONTAINER **********************************/
 .middle-container {
-  margin: 0 25px 0 50px;
+  width: 600px;
+  margin: auto;
 }
 
 .post-profile-picture {

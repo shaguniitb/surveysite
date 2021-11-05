@@ -27,19 +27,19 @@
   };
   const PROBABILITY_EXAMPLES = {
     'L1': [
-
+      'there should be'
     ],
     'L2': [
-
+      'some examples here'
     ],
     'L3': [
-
+      'but there are not'
     ],
     'L4': [
-
+      'so this is just filled with nothing'
     ],
     'L5': [
-
+      'and forever nothing'
     ],
   };
   const INTENSITY_EXPLANATION = {
@@ -53,7 +53,7 @@
   function handleSliderChange(level) {
     var desc = document.getElementById('slider-explanation');
     var examples = document.getElementById('slider-examples');
-    desc.innerText = 'Slider set to ' + level + '. Here are some examples of comments that will be filtered.';
+    desc.innerText = 'Slider set to ' + level + '. Here are some examples of comments that will be filtered:';
     examples.innerHTML = '';
     INTENSITY_EXAMPLES['L' + level].forEach(function (item, i) {
       var example = document.createElement('div');
@@ -61,6 +61,8 @@
       examples.appendChild(example);
       example.innerText = item;
     });
+    // Post the results
+
   }
 
   function bindSliders() {
