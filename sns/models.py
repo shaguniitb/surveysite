@@ -20,7 +20,8 @@ class Participant(models.Model):
     INTERFACE_CHOICES = (
         ("1", "Toggle"),
         ("2", "Word Filter"),
-        ("3", "Intensity Slider")
+        ("3", "Intensity Slider"),
+        ("4", "Proportion Slider"),
     )
 
     username = models.CharField(max_length=100, blank=True, null=True)
@@ -41,10 +42,15 @@ class Participant(models.Model):
         wordFilterSetting.word_filters = ''
         wordFilterSetting.save()       
 
-    def resetSlider(self):
-        sliderSetting, _ = SliderSetting.objects.get_or_create(participant = self)
+    def resetIntensitySlider(self):
+        sliderSetting, _ = IntensitySliderSetting.objects.get_or_create(participant = self)
         sliderSetting.slider_level = 1
-        sliderSetting.save()                
+        sliderSetting.save()     
+
+    def resetProportionSlider(self):
+        sliderSetting, _ = ProportionSliderSetting.objects.get_or_create(participant = self)
+        sliderSetting.slider_level = 1
+        sliderSetting.save()                        
 
 class ToggleSetting(models.Model):
     participant = models.ForeignKey(Participant, on_delete=models.CASCADE)
@@ -54,7 +60,7 @@ class WordFilterSetting(models.Model):
     participant = models.ForeignKey(Participant, on_delete=models.CASCADE)
     word_filters = models.TextField(blank=True, null=True)
 
-class SliderSetting(models.Model):
+class IntensitySliderSetting(models.Model):
 
     class SliderChoices(models.IntegerChoices):
       NONE = 1
@@ -68,3 +74,18 @@ class SliderSetting(models.Model):
         default = 1
     )
     participant = models.ForeignKey(Participant, on_delete=models.CASCADE)
+
+class ProportionSliderSetting(models.Model):
+
+    class SliderChoices(models.IntegerChoices):
+      NONE = 1
+      A_LITTLE = 2
+      SOME = 3
+      MORE = 4
+      A_LOT = 5
+
+    slider_level = models.IntegerField(
+        choices = SliderChoices.choices,
+        default = 1
+    )
+    participant = models.ForeignKey(Participant, on_delete=models.CASCADE)    

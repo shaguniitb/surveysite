@@ -56,7 +56,7 @@
 $(document).ready(function() {
   $('#slider-form').submit(function(e){
     console.log("came here");
-    $.post("{% url 'sns:semantic_slider' %}",
+    $.post("{% url post_url_string %}",
       $(this).serialize(),
       function(data){
         var self = document.getElementById("result");

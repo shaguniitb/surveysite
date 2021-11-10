@@ -3,8 +3,8 @@ from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.shortcuts import redirect, reverse
 from django.template.loader import render_to_string
 from django.template import RequestContext
-from .models import Comment, Participant, ToggleSetting, WordFilterSetting, SliderSetting
-from .forms import WfForm, SemanticSliderForm, InterfaceForm, NewUserForm, ParticipantForm
+from .models import Comment, Participant, ToggleSetting, WordFilterSetting, IntensitySliderSetting, ProportionSliderSetting
+from .forms import WfForm, IntensitySliderForm, ProportionSliderForm, InterfaceForm, NewUserForm, ParticipantForm
 import json, re
 
 # Create your views here.
@@ -41,7 +41,6 @@ def get_user(request):
   return render(request, "sns/get_user.html", {'form': form})
 
 def getParticipantFromSession(request):
-  print (request.session.get('participant_id'))
   try:
     participant = Participant.objects.get(id=request.session['participant_id'])
   except (KeyError, Participant.DoesNotExist):
@@ -70,7 +69,9 @@ def settingsPage(setting):
   elif (setting == "2"):
     return HttpResponseRedirect(reverse('sns:wordfilter'))
   elif (setting == "3"):
-    return HttpResponseRedirect(reverse('sns:semantic_slider'))
+    return HttpResponseRedirect(reverse('sns:intensity_slider'))
+  elif (setting == "4"):
+    return HttpResponseRedirect(reverse('sns:proportion_slider'))    
 
 def interface(request):
   participant = getParticipantFromSession(request)
@@ -97,7 +98,8 @@ def feed(request):
   participant = getParticipantFromSession(request)
   if (participant.setting == "1"):
     participant.resetWordFilter()
-    participant.resetSlider()
+    participant.resetIntensitySlider()
+    participant.resetProportionSlider()
     toggleSetting, _ = ToggleSetting.objects.get_or_create(participant = participant)
     filter_toxic = toggleSetting.filter_toxic
     if (filter_toxic):
@@ -107,18 +109,30 @@ def feed(request):
 
   elif (participant.setting == "2"):
     participant.resetToggle()
-    participant.resetSlider()
+    participant.resetIntensitySlider()
+    participant.resetProportionSlider()    
     wordFilterSetting, _ = WordFilterSetting.objects.get_or_create(participant = participant)
     word_filters = wordFilterSetting.word_filters
     matched_comment_ids = get_matched_comment_ids(word_filters)
     comments = Comment.objects.exclude(id__in = matched_comment_ids)
+    print (len(comments))
 
   elif (participant.setting == "3"):
     participant.resetToggle()
     participant.resetWordFilter()
-    sliderSetting, _ = SliderSetting.objects.get_or_create(participant = participant)
+    participant.resetProportionSlider()   
+    sliderSetting, _ = IntensitySliderSetting.objects.get_or_create(participant = participant)
     slider_level = sliderSetting.slider_level
-    comments = get_slider_comments('perspective', slider_level)
+    comments = get_slider_comments('intensity', slider_level)
+
+  elif (participant.setting == "4"):
+    participant.resetToggle()
+    participant.resetWordFilter()
+    participant.resetIntensitySlider()   
+    sliderSetting, _ = ProportionSliderSetting.objects.get_or_create(participant = participant)
+    slider_level = sliderSetting.slider_level
+    comments = get_slider_comments('proportion', slider_level)    
+
   return render(request, "sns/feed.html", {'comments': comments})
 
 def getCommentsFromSets(setList):
@@ -129,7 +143,7 @@ def getCommentsFromSets(setList):
   return comments
 
 def get_slider_comments(slider_type, slider_level):
-  if (slider_type == 'perspective'):
+  if (slider_type == 'intensity'):
     if (slider_level == 1):
       first_set = Comment.objects.filter(perspective_score__gte = 0.2)
       second_set = Comment.objects.filter(perspective_score__lte = 0.2, toxicity_score__gte = 0.2)
@@ -191,12 +205,12 @@ def wordfilter(request):
     return render(request, "sns/wordfilter.html", {'form': form})
 
 
-def semantic_slider(request):
+def intensity_slider(request):
   participant = getParticipantFromSession(request)
-  sliderSetting, _ = SliderSetting.objects.get_or_create(participant = participant)
+  sliderSetting, _ = IntensitySliderSetting.objects.get_or_create(participant = participant)
 
   if request.method == 'POST':
-    form = SemanticSliderForm(request.POST)
+    form = IntensitySliderForm(request.POST)
     if form.is_valid():
       slider_level = form.cleaned_data['slider_level']
       sliderSetting.slider_level = slider_level
@@ -205,19 +219,52 @@ def semantic_slider(request):
         'message': 'Your changes have been saved.'
       }
 
-      form = SemanticSliderForm(initial = {'slider_level': sliderSetting.slider_level})
-      print ("Current slider leves is", sliderSetting.slider_level )
+      form = IntensitySliderForm(initial = {'slider_level': sliderSetting.slider_level})
       return render(request, "sns/semantic_slider.html", {
         'form': form,
         'show_alert': True,
+        'post_url_string': 'sns:intensity_slider',
       })
 
       # return HttpResponse(json.dumps(response), content_type='application/json')
     else:
       return HttpResponse('oops', content_type='text/plain')
   else:
-    form = SemanticSliderForm(initial = {'value': sliderSetting.slider_level})
+    form = IntensitySliderForm(initial = {'value': sliderSetting.slider_level})
     return render(request, "sns/semantic_slider.html", {
       'form': form,
       'show_alert': False,
+      'post_url_string': 'sns:intensity_slider',
     })
+
+def proportion_slider(request):
+  participant = getParticipantFromSession(request)
+  sliderSetting, _ = ProportionSliderSetting.objects.get_or_create(participant = participant)
+
+  if request.method == 'POST':
+    form = ProportionSliderForm(request.POST)
+    if form.is_valid():
+      slider_level = form.cleaned_data['slider_level']
+      sliderSetting.slider_level = slider_level
+      sliderSetting.save()
+      response = {
+        'message': 'Your changes have been saved.'
+      }
+
+      form = ProportionSliderForm(initial = {'slider_level': sliderSetting.slider_level})
+      return render(request, "sns/semantic_slider.html", {
+        'form': form,
+        'show_alert': True,
+        'post_url_string': 'sns:proportion_slider',
+      })
+
+      # return HttpResponse(json.dumps(response), content_type='application/json')
+    else:
+      return HttpResponse('oops', content_type='text/plain')
+  else:
+    form = ProportionSliderForm(initial = {'value': sliderSetting.slider_level})
+    return render(request, "sns/semantic_slider.html", {
+      'form': form,
+      'show_alert': False,
+      'post_url_string': 'sns:proportion_slider',
+    })    

@@ -1,6 +1,6 @@
 from django import forms
 from .widgets import SemanticScale
-from .models import Participant, WordFilterSetting, SliderSetting
+from .models import Participant, WordFilterSetting, IntensitySliderSetting, ProportionSliderSetting
 
 class NewUserForm(forms.Form):
   is_new_user = forms.BooleanField(
@@ -34,7 +34,7 @@ class WfForm(forms.ModelForm):
     model = WordFilterSetting
     fields = [ "word_filters" ]
 
-class SemanticSliderForm(forms.ModelForm):
+class IntensitySliderForm(forms.ModelForm):
   slider_level = forms.IntegerField(
     widget = SemanticScale,
     max_value = 5,
@@ -42,8 +42,19 @@ class SemanticSliderForm(forms.ModelForm):
   )
 
   class Meta:
-    model = SliderSetting
+    model = IntensitySliderSetting
     fields = [ "slider_level" ]
+
+class ProportionSliderForm(forms.ModelForm):
+  slider_level = forms.IntegerField(
+    widget = SemanticScale,
+    max_value = 5,
+    min_value = 1
+  )
+
+  class Meta:
+    model = ProportionSliderSetting
+    fields = [ "slider_level" ]    
 
 class InterfaceForm(forms.ModelForm):
   setting = forms.CharField(
