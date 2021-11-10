@@ -8,17 +8,24 @@ def fill_tables_from_csv(filename):
     df = pd.read_csv(filename)
     for index, row in df.iterrows():
         text = row['comment']
-        perspective_score = row['perspective_score']
         toxicity_score = row['avg_toxic_score']
         author = row['author']
-        pub_date = timezone.now()
+        author_name = row['author_name']
+        pub_date = row['pub_date']
+        num_likes = row['num_likes']
+        num_comments = row['num_comments']
+        num_retweets = row['num_retweets']
         comment, created = Comment.objects.update_or_create(
             text = text,
+            author_name = author_name,
+            num_likes = num_likes,
+            num_comments = num_comments,
+            num_retweets = num_retweets,
+            pub_date = pub_date,
+            toxicity_score = toxicity_score,
             defaults = {
-                'perspective_score': perspective_score,
-                'toxicity_score': toxicity_score,
                 'author': author,
-                'pub_date': pub_date,
+                'text': text,
             }
         )    
 

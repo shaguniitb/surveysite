@@ -17,9 +17,9 @@
         <div class="tweet-body">
           <div class="metadata">
             <a class="" href="">
-              {{ comment.author }}
+              {{ comment.author_name }}
               <span class="handle">@{{ comment.author }}</span>
-              <span class="time-ago scnd-font-color">10 minutes ago</span>
+              <span class="time-ago scnd-font-color">{{ comment.pub_date }}</span>
             </a>
           </div>
           <div class="content">

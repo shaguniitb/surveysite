@@ -5,10 +5,10 @@ from django.utils.timezone import now
 
 class Comment(models.Model):
     text = models.TextField()
-    perspective_score = models.FloatField()
     toxicity_score = models.FloatField()
     author = models.CharField(default = 'Test Author', max_length=100)
-    pub_date = models.DateTimeField('date published', default = now)
+    author_name = models.CharField(default = 'Test Author', max_length=100)
+    pub_date = models.DateField('date published', default = now)
     num_likes = models.IntegerField(default = 0)
     num_comments = models.IntegerField(default = 0)
     num_retweets = models.IntegerField(default = 0)

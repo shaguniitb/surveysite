@@ -144,6 +144,7 @@ def getCommentsFromSets(setList):
 
 def get_slider_comments(slider_type, slider_level):
   if (slider_type == 'intensity'):
+    return Comment.objects.all()
     if (slider_level == 1):
       first_set = Comment.objects.filter(perspective_score__gte = 0.2)
       second_set = Comment.objects.filter(perspective_score__lte = 0.2, toxicity_score__gte = 0.2)
