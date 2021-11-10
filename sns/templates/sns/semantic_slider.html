@@ -38,9 +38,18 @@
         </formgroup>
         <input type="submit" class="btn btn-primary save-button" value="Save" />
       </form>
+      {% if show_alert %}
+        <div class="result"><span id="result">Your changes have been saved!</span></div>
+
+      {% endif %}
+
+
+
     </div>
   </div>
 </div>
+
+
 
 <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
 <script type="text/javascript">

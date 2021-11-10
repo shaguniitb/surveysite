@@ -204,11 +204,20 @@ def semantic_slider(request):
       response = {
         'message': 'Your changes have been saved.'
       }
-      return HttpResponse(json.dumps(response), content_type='application/json')
+
+      form = SemanticSliderForm(initial = {'slider_level': sliderSetting.slider_level})
+      print ("Current slider leves is", sliderSetting.slider_level )
+      return render(request, "sns/semantic_slider.html", {
+        'form': form,
+        'show_alert': True,
+      })
+
+      # return HttpResponse(json.dumps(response), content_type='application/json')
     else:
       return HttpResponse('oops', content_type='text/plain')
   else:
     form = SemanticSliderForm(initial = {'value': sliderSetting.slider_level})
     return render(request, "sns/semantic_slider.html", {
-      'form': form
+      'form': form,
+      'show_alert': False,
     })
