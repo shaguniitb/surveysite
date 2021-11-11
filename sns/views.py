@@ -223,7 +223,8 @@ def wordfilter(request):
     return render(request, "sns/wordfilter.html", {'form': form})
 
 
-def intensity_slider(request):
+def intensity_slider(request, **kwargs):
+  with_examples = kwargs['with_examples']
   participant = getParticipantFromSession(request)
   sliderSetting, _ = IntensitySliderSetting.objects.get_or_create(participant = participant)
 
@@ -233,18 +234,15 @@ def intensity_slider(request):
       slider_level = form.cleaned_data['slider_level']
       sliderSetting.slider_level = slider_level
       sliderSetting.save()
-      response = {
-        'message': 'Your changes have been saved.'
-      }
 
       form = IntensitySliderForm(initial = {'slider_level': sliderSetting.slider_level})
       return render(request, "sns/semantic_slider.html", {
         'form': form,
         'show_alert': True,
         'post_url_string': 'sns:intensity_slider',
+        'with_examples': with_examples,
       })
 
-      # return HttpResponse(json.dumps(response), content_type='application/json')
     else:
       return HttpResponse('oops', content_type='text/plain')
   else:
@@ -253,9 +251,11 @@ def intensity_slider(request):
       'form': form,
       'show_alert': False,
       'post_url_string': 'sns:intensity_slider',
+      'with_examples': with_examples,
     })
 
-def proportion_slider(request):
+def proportion_slider(request, **kwargs):
+  with_examples = kwargs['with_examples']
   participant = getParticipantFromSession(request)
   sliderSetting, _ = ProportionSliderSetting.objects.get_or_create(participant = participant)
 
@@ -265,18 +265,15 @@ def proportion_slider(request):
       slider_level = form.cleaned_data['slider_level']
       sliderSetting.slider_level = slider_level
       sliderSetting.save()
-      response = {
-        'message': 'Your changes have been saved.'
-      }
 
       form = ProportionSliderForm(initial = {'slider_level': sliderSetting.slider_level})
       return render(request, "sns/semantic_slider.html", {
         'form': form,
         'show_alert': True,
         'post_url_string': 'sns:proportion_slider',
+        'with_examples': with_examples,
       })
 
-      # return HttpResponse(json.dumps(response), content_type='application/json')
     else:
       return HttpResponse('oops', content_type='text/plain')
   else:
@@ -285,4 +282,5 @@ def proportion_slider(request):
       'form': form,
       'show_alert': False,
       'post_url_string': 'sns:proportion_slider',
+      'with_examples': with_examples,
     })    

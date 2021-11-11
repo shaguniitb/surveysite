@@ -27,6 +27,7 @@
           <div class="leveled-slider">
             {{ form.slider_level }}
           </div>
+          {% if with_examples %}
           <div class="level-explanation" id="slider-explanation">
             This will be filled once the slider is set.
             You should not see this message.
@@ -35,12 +36,12 @@
             <div class="item">Test</div>
             <div class="item">Test</div>
           </div>
+          {% endif %}
         </formgroup>
         <input type="submit" class="btn btn-primary save-button" value="Save" />
       </form>
       {% if show_alert %}
         <div class="result"><span id="result">Your changes have been saved!</span></div>
-
       {% endif %}
 
 
@@ -55,7 +56,6 @@
 <script type="text/javascript">
 $(document).ready(function() {
   $('#slider-form').submit(function(e){
-    console.log("came here");
     $.post("{% url post_url_string %}",
       $(this).serialize(),
       function(data){
