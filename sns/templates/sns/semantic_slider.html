@@ -17,56 +17,42 @@
       <form action="" method="post" id="slider-form">
         {% csrf_token %}
         <formgroup>
-          <div class="levels">
-            <div class="level">No Moderation</div>
-            <div class="level">A Little Moderation</div>
-            <div class="level">Some Moderation</div>
-            <div class="level">More Moderation</div>
-            <div class="level">A Lot of Moderation</div>
-          </div>
+          {% if slider_mode == 'intensity' %}
+            <div class="levels">
+              <div class="level">Nothing</div>
+              <div class="level">Remove Very Toxic</div>
+              <div class="level">Remove Toxic</div>
+              <div class="level">Remove Somwhat Toxic</div>
+              <div class="level">Remove Mildly Toxic</div>
+            </div>
+          {% else %}
+            <div class="levels">
+              <div class="level">No Moderation</div>
+              <div class="level">A Little Moderation</div>
+              <div class="level">Some Moderation</div>
+              <div class="level">More Moderation</div>
+              <div class="level">A Lot of Moderation</div>
+            </div>
+          {% endif %}
           <div class="leveled-slider">
             {{ form.slider_level }}
           </div>
           {% if with_examples %}
-          <div class="level-explanation" id="slider-explanation">
-            This will be filled once the slider is set.
-            You should not see this message.
-          </div>
-          <div class="level-examples" id="slider-examples">
-            <div class="item">Test</div>
-            <div class="item">Test</div>
-          </div>
+            <div class="level-explanation" id="slider-explanation">
+              This will be filled once the slider is set.
+              You should not see this message.
+            </div>
+            <div class="level-examples" id="slider-examples">
+            </div>
           {% endif %}
+          <div id="slider-mode" style="display: none;">{{ slider_mode }}</div>
         </formgroup>
         <input type="submit" class="btn btn-primary save-button" value="Save" />
       </form>
       {% if show_alert %}
         <div class="result"><span id="result">Your changes have been saved!</span></div>
       {% endif %}
-
-
-
     </div>
   </div>
 </div>
-
-
-
-<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
-<script type="text/javascript">
-$(document).ready(function() {
-  $('#slider-form').submit(function(e){
-    $.post("{% url post_url_string %}",
-      $(this).serialize(),
-      function(data){
-        var self = document.getElementById("result");
-        self.innerText = data.message;
-        setTimeout(function() {
-            self.innerText = '';
-        }, 2000);
-      });
-
-   });
-});
-</script>
 {% endblock content %}

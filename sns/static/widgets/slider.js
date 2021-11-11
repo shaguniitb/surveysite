@@ -42,42 +42,54 @@
       'and forever nothing'
     ],
   };
-  const INTENSITY_EXPLANATION = {
 
-  };
-
-  function onChangeListener(e) {
-    handleSliderChange(e.target.value);
+  function makeChangeListener(mode) {
+    return function (e) {
+      handleSliderChange(e.target.value, mode);
+    }
   }
 
-  function handleSliderChange(level) {
-    var desc = document.getElementById('slider-explanation');
-    var examples = document.getElementById('slider-examples');
-    desc.innerText = 'Slider set to ' + level + '. Here are some examples of comments that will be filtered:';
-    examples.innerHTML = '';
-    INTENSITY_EXAMPLES['L' + level].forEach(function (item, i) {
-      var example = document.createElement('div');
-      example.className = 'tweet';
-      examples.appendChild(example);
-      example.innerText = item;
-    });
-    // Post the results
+  function handleSliderChange(level, mode) {
+    if (mode === 'intensity') {
+      var examples = INTENSITY_EXAMPLES;
+    } else if (mode === 'probability') {
+      var examples = PROBABILITY_EXAMPLES;
+    }
 
+    var descDiv = document.getElementById('slider-explanation');
+    var examplesDiv = document.getElementById('slider-examples');
+    if (typeof descDiv !== 'undefined' && descDiv !== null) {
+      descDiv.innerText = 'Slider set to ' + level + '. Here are some examples of comments that will be filtered:';
+    }
+    if (typeof examplesDiv !== 'undefined' && examplesDiv !== null) {
+      examplesDiv.innerHTML = '';
+      examples['L' + level].forEach(function (item, i) {
+        var example = document.createElement('div');
+        example.className = 'tweet';
+        examplesDiv.appendChild(example);
+        example.innerText = item;
+      });
+    }
   }
 
-  function bindSliders() {
+  function bindSliders(mode) {
     var inputs = document.getElementsByTagName('input');
     for (var i = 0; i < inputs.length; i++) {
       if (inputs[i].type == 'range') {
-        inputs[i].addEventListener('change', onChangeListener);
-        handleSliderChange(inputs[i].value);
+        inputs[i].addEventListener('change', makeChangeListener(mode));
+        handleSliderChange(inputs[i].value, mode);
         return;
       }
     }
   }
 
   window.addEventListener('load', function () {
+    var modeElem = document.getElementById('slider-mode');
+    var mode = 'intensity';
+    if (modeElem !== null) {
+      mode = modeElem.innerText.trim();
+    }
     // find and bind
-    bindSliders();
+    bindSliders(mode);
   });
 })();

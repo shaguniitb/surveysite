@@ -10,16 +10,10 @@
   line-height: 20px;
   padding: 20px 10px;
   border-bottom: 1px solid black;
-  width: 700px;
-  height: 100px;
   margin-left: 20px;
 }
-/*.container {
-margin-left: 0px;
-}*/
 
- .slider-input li{
+.slider-input li {
   display: inline-block;
   margin-bottom: 20px;
 }
-

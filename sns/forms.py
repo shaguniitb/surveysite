@@ -2,14 +2,10 @@ from django import forms
 from .widgets import SemanticScale
 from .models import Participant, WordFilterSetting, IntensitySliderSetting, ProportionSliderSetting
 
-class NewUserForm(forms.Form):
-  is_new_user = forms.BooleanField(
+class LoginForm(forms.Form):
+  action = forms.CharField(
     required = False,
-    widget=forms.CheckboxInput(
-      attrs={
-      "class": "form-check-input",
-      }
-    ),
+    widget=None
   )
 
 class ParticipantForm(forms.ModelForm):
@@ -54,7 +50,7 @@ class ProportionSliderForm(forms.ModelForm):
 
   class Meta:
     model = ProportionSliderSetting
-    fields = [ "slider_level" ]    
+    fields = [ "slider_level" ]
 
 class InterfaceForm(forms.ModelForm):
   setting = forms.CharField(

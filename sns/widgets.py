@@ -1,4 +1,7 @@
-from django.forms.widgets import NumberInput
+from django.forms.widgets import NumberInput, Select
+
+class SelectableButton(Select):
+  pass
 
 class RangeInput(NumberInput):
   """A discrete range slider"""

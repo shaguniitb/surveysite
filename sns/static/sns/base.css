@@ -301,6 +301,7 @@ header {
   background: #50597b;
   border-bottom: 4px solid #11a8ab;
   text-decoration: none;
+  color: #fff;
 }
 
 .header-menu-tab .icon {
@@ -335,7 +336,7 @@ header {
 .profile-menu {
   float: right;
   height: 60px;
-  padding-right: 20px;
+  margin: 0 20px;
 }
 
 .profile-menu p {
@@ -364,15 +365,14 @@ header {
 
 }
 
+.posts-container {
+  width: 800px;
+}
+
 .block {
   margin-bottom: 25px;
   background: #394264;
   border-radius: 5px;
-}
-
-/************************************************** MIDDLE CONTAINER **********************************/
-.middle-container {
-  margin: 0 25px 0 50px;
 }
 
 .post-profile-picture {
@@ -489,7 +489,7 @@ p.instruction {
   margin-left: 25px;
 }
 
-.save-button {
-  margin-top: 10px;
-  margin-left: 360px;
+
+.centered-button-group {
+  text-align: center;
 }

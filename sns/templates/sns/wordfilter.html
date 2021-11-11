@@ -20,36 +20,32 @@
         {% csrf_token %}
         <formgroup>
           {{ form.word_filters.errors }}
-          
+
           {{ form.word_filters }}
+          <div class="result"><span id="result"></span></div>
+          <p class="instruction">  Comments closely matching these words will be filtered out of your feed.  </p>
         </formgroup>
         <input type="submit" class="btn btn-primary save-button" value="Save" />
       </form>
-      <div class="result"><span id="result"></span></div>
-      <p class="instruction">  Comments closely matching these words will be filtered out of your feed.  </p>
     </div>
-
   </div>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.3.1.js"></script> 
+<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
   $('#wf-form').submit(function(e){
-    $.post("{% url 'sns:wordfilter' %}", 
-      $(this).serialize(), 
+    $.post("{% url 'sns:wordfilter' %}",
+      $(this).serialize(),
       function(data){
         var self = document.getElementById("result");
         self.innerText = data.message;
         setTimeout(function() {
             self.innerText = '';
-        }, 2000);        
+        }, 2000);
       });
      e.preventDefault();
    });
-}); 
-</script> -->
-
-
+});
+</script>
 {% endblock content %}
-

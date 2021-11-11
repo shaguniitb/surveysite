@@ -4,31 +4,25 @@ from django.shortcuts import redirect, reverse
 from django.template.loader import render_to_string
 from django.template import RequestContext
 from .models import Comment, Participant, ToggleSetting, WordFilterSetting, IntensitySliderSetting, ProportionSliderSetting
-from .forms import WfForm, IntensitySliderForm, ProportionSliderForm, InterfaceForm, NewUserForm, ParticipantForm
+from .forms import WfForm, IntensitySliderForm, ProportionSliderForm, InterfaceForm, LoginForm, ParticipantForm
 import json, re
 
 # Create your views here.
-
-# def index(request):
-#   return HttpResponse("Hello, world. You're at the sns index.")
-
 MAX_COMMENTS = 20
 
-def is_new_user(request):
+def register(request):
   if request.method == 'POST':
-    form = NewUserForm(request.POST)
-    if form.is_valid():
-      is_new_user = form.cleaned_data['is_new_user']
-      if (is_new_user == True):
-        participant = Participant.objects.create()
-        request.session['participant_id'] = participant.id
-        return HttpResponseRedirect(reverse('sns:feed'))
-      else:
-        return HttpResponseRedirect(reverse('sns:get_user'))
-  form = NewUserForm(initial={'is_new_user': True})
-  return render(request, "sns/is_new_user.html", {'form': form})
+    action = request.POST.get('action', '')
+    if action == 'New User':
+      participant = Participant.objects.create()
+      request.session['participant_id'] = participant.id
+      return HttpResponseRedirect(reverse('sns:feed'))
+    elif action == 'Existing User':
+      return HttpResponseRedirect(reverse('sns:login'))
+  form = LoginForm()
+  return render(request, "sns/is_new_user.html", {'form': form, 'uid': '?'})
 
-def get_user(request):
+def login(request):
   if request.method == 'POST':
     form = ParticipantForm(request.POST)
     if form.is_valid():
@@ -38,9 +32,9 @@ def get_user(request):
         request.session['participant_id'] = participant.id
         return HttpResponseRedirect(reverse('sns:feed'))
       else:
-        return HttpResponseRedirect(reverse('sns:get_user'))
+        return HttpResponseRedirect(reverse('sns:login'))
   form = ParticipantForm()
-  return render(request, "sns/get_user.html", {'form': form})
+  return render(request, "sns/get_user.html", {'form': form, 'uid': '?'})
 
 def getParticipantFromSession(request):
   try:
@@ -75,7 +69,7 @@ def settingsPage(setting):
   elif (setting == "3"):
     return HttpResponseRedirect(reverse('sns:intensity_slider'))
   elif (setting == "4"):
-    return HttpResponseRedirect(reverse('sns:proportion_slider'))    
+    return HttpResponseRedirect(reverse('sns:proportion_slider'))
 
 def interface(request):
   participant = getParticipantFromSession(request)
@@ -91,15 +85,67 @@ def interface(request):
       return settingsPage(setting)
   else:
     form = InterfaceForm(initial={'setting': participant.setting})
-    return render(request, "sns/interface.html", {'form': form})
+    return render(request, "sns/interface.html", {'form': form, 'uid': participant.id})
 
 def settings(request):
   participant = getParticipantFromSession(request)
+  if participant is None:
+    return HttpResponseRedirect(reverse('sns:register'))
   setting = participant.setting
   return settingsPage(setting)
 
+def getCommentsFromSets(setList):
+  idList = []
+  for l in setList:
+    idList += [comment.id for comment in l]
+  comments = Comment.objects.filter(id__in = idList)
+  return comments
+
+def get_slider_comments(slider_type, slider_level):
+  if (slider_type == 'intensity'):
+    if (slider_level == 1):
+      first_set = Comment.objects.filter(toxicity_score__gte = 0.6)
+      second_set = Comment.objects.filter(toxicity_score__lt = 0.6)[:4]
+      return getCommentsFromSets([first_set, second_set])
+    elif (slider_level == 2):
+      first_set = Comment.objects.filter(toxicity_score__gte = 0.6, toxicity_score__lt = 0.9)
+      second_set = Comment.objects.filter(toxicity_score__lt = 0.6)[:8]
+      return getCommentsFromSets([first_set, second_set])
+    elif (slider_level == 3):
+      first_set = Comment.objects.filter(toxicity_score__gte = 0.6, toxicity_score__lt = 0.8)
+      second_set = Comment.objects.filter(toxicity_score__lt = 0.6)[:12]
+      return getCommentsFromSets([first_set, second_set])
+    elif (slider_level == 4):
+      first_set = Comment.objects.filter(toxicity_score__gte = 0.6, toxicity_score__lt = 0.7)
+      second_set = Comment.objects.filter(toxicity_score__lt = 0.6)[:16]
+      return getCommentsFromSets([first_set, second_set])
+    elif (slider_level == 5):
+      return Comment.objects.filter(toxicity_score__lt = 0.6)
+
+  elif (slider_type == 'proportion'):
+    if (slider_level == 1):
+      first_set = Comment.objects.filter(toxicity_score__gte = 0.6)
+      second_set = Comment.objects.filter(toxicity_score__lt = 0.6)[:4]
+      return getCommentsFromSets([first_set, second_set])
+    elif (slider_level == 2):
+      first_set = Comment.objects.filter(toxicity_score__gte = 0.6)[:12]
+      second_set = Comment.objects.filter(toxicity_score__lt = 0.6)[:8]
+      return getCommentsFromSets([first_set, second_set])
+    elif (slider_level == 3):
+      first_set = Comment.objects.filter(toxicity_score__gte = 0.6)[:8]
+      second_set = Comment.objects.filter(toxicity_score__lt = 0.6)[:12]
+      return getCommentsFromSets([first_set, second_set])
+    elif (slider_level == 4):
+      first_set = Comment.objects.filter(toxicity_score__gte = 0.6)[:4]
+      second_set = Comment.objects.filter(toxicity_score__lt = 0.6)[:16]
+      return getCommentsFromSets([first_set, second_set])
+    elif (slider_level == 5):
+      return Comment.objects.filter(toxicity_score__lt = 0.6)
+
 def feed(request):
   participant = getParticipantFromSession(request)
+  if participant is None:
+    return HttpResponseRedirect(reverse('sns:register'))
   if (participant.setting == "1"):
     participant.resetWordFilter()
     participant.resetIntensitySlider()
@@ -110,84 +156,34 @@ def feed(request):
       comments = Comment.objects.filter(toxicity_score__lt = 0.6)[:MAX_COMMENTS]
     else:
       comments = Comment.objects.all()[:MAX_COMMENTS]
-
   elif (participant.setting == "2"):
     participant.resetToggle()
     participant.resetIntensitySlider()
-    participant.resetProportionSlider()    
+    participant.resetProportionSlider()
     wordFilterSetting, _ = WordFilterSetting.objects.get_or_create(participant = participant)
     word_filters = wordFilterSetting.word_filters
     comments = get_matched_comments(word_filters)
-
   elif (participant.setting == "3"):
     participant.resetToggle()
     participant.resetWordFilter()
-    participant.resetProportionSlider()   
+    participant.resetProportionSlider()
     sliderSetting, _ = IntensitySliderSetting.objects.get_or_create(participant = participant)
     slider_level = sliderSetting.slider_level
     comments = get_slider_comments('intensity', slider_level)
-
   elif (participant.setting == "4"):
     participant.resetToggle()
     participant.resetWordFilter()
-    participant.resetIntensitySlider()   
+    participant.resetIntensitySlider()
     sliderSetting, _ = ProportionSliderSetting.objects.get_or_create(participant = participant)
     slider_level = sliderSetting.slider_level
-    comments = get_slider_comments('proportion', slider_level)    
+    comments = get_slider_comments('proportion', slider_level)
 
-  return render(request, "sns/feed.html", {'comments': comments})
-
-def getCommentsFromSets(setList):
-  idList = []
-  for l in setList:    
-    idList += [comment.id for comment in l]
-  comments = Comment.objects.filter(id__in = idList)
-  return comments
-
-def get_slider_comments(slider_type, slider_level):
-  if (slider_type == 'intensity'):
-    if (slider_level == 1):
-      first_set = Comment.objects.filter(toxicity_score__gte = 0.6)
-      second_set = Comment.objects.filter(toxicity_score__lt = 0.6)[:4]  
-      return getCommentsFromSets([first_set, second_set])  
-    elif (slider_level == 2):
-      first_set = Comment.objects.filter(toxicity_score__gte = 0.6, toxicity_score__lt = 0.9)
-      second_set = Comment.objects.filter(toxicity_score__lt = 0.6)[:8]        
-      return getCommentsFromSets([first_set, second_set])  
-    elif (slider_level == 3):
-      first_set = Comment.objects.filter(toxicity_score__gte = 0.6, toxicity_score__lt = 0.8)
-      second_set = Comment.objects.filter(toxicity_score__lt = 0.6)[:12]              
-      return getCommentsFromSets([first_set, second_set])  
-    elif (slider_level == 4):
-      first_set = Comment.objects.filter(toxicity_score__gte = 0.6, toxicity_score__lt = 0.7)
-      second_set = Comment.objects.filter(toxicity_score__lt = 0.6)[:16]                    
-      return getCommentsFromSets([first_set, second_set])  
-    elif (slider_level == 5):
-      return Comment.objects.filter(toxicity_score__lt = 0.6)
-
-  elif (slider_type == 'proportion'):
-    if (slider_level == 1):
-      first_set = Comment.objects.filter(toxicity_score__gte = 0.6)
-      second_set = Comment.objects.filter(toxicity_score__lt = 0.6)[:4]  
-      return getCommentsFromSets([first_set, second_set])  
-    elif (slider_level == 2):
-      first_set = Comment.objects.filter(toxicity_score__gte = 0.6)[:12]
-      second_set = Comment.objects.filter(toxicity_score__lt = 0.6)[:8]        
-      return getCommentsFromSets([first_set, second_set])  
-    elif (slider_level == 3):
-      first_set = Comment.objects.filter(toxicity_score__gte = 0.6)[:8]
-      second_set = Comment.objects.filter(toxicity_score__lt = 0.6)[:12]              
-      return getCommentsFromSets([first_set, second_set])  
-    elif (slider_level == 4):
-      first_set = Comment.objects.filter(toxicity_score__gte = 0.6)[:4]
-      second_set = Comment.objects.filter(toxicity_score__lt = 0.6)[:16]                    
-      return getCommentsFromSets([first_set, second_set])  
-    elif (slider_level == 5):
-      return Comment.objects.filter(toxicity_score__lt = 0.6)      
-
+  return render(request, "sns/feed.html", {'comments': comments, 'uid': participant.id})
 
 def toggle(request):
   participant = getParticipantFromSession(request)
+  if participant is None:
+    return HttpResponseRedirect(reverse('sns:register'))
   toggleSetting, _ = ToggleSetting.objects.get_or_create(participant = participant)
   if request.method =='POST':
     post_value = request.POST['filter_toxic']
@@ -198,10 +194,12 @@ def toggle(request):
     }
     return HttpResponse(json.dumps(response), content_type='application/json')
   else:
-    return render(request, "sns/toggle.html", {'toggleSetting': toggleSetting})
+    return render(request, "sns/toggle.html", {'toggleSetting': toggleSetting, 'uid': participant.id})
 
 def wordfilter(request):
   participant = getParticipantFromSession(request)
+  if participant is None:
+    return HttpResponseRedirect(reverse('sns:register'))
   wfSetting, _ = WordFilterSetting.objects.get_or_create(participant = participant)
 
   if request.method == 'POST':
@@ -220,13 +218,16 @@ def wordfilter(request):
 
   else:
     form = WfForm(initial={'word_filters': wfSetting.word_filters})
-    return render(request, "sns/wordfilter.html", {'form': form})
+    return render(request, "sns/wordfilter.html", {'form': form, 'uid': participant.id})
 
 
 def intensity_slider(request, **kwargs):
   with_examples = kwargs['with_examples']
   participant = getParticipantFromSession(request)
+  if participant is None:
+    return HttpResponseRedirect(reverse('sns:register'))
   sliderSetting, _ = IntensitySliderSetting.objects.get_or_create(participant = participant)
+  show_alert = False
 
   if request.method == 'POST':
     form = IntensitySliderForm(request.POST)
@@ -234,53 +235,40 @@ def intensity_slider(request, **kwargs):
       slider_level = form.cleaned_data['slider_level']
       sliderSetting.slider_level = slider_level
       sliderSetting.save()
+      show_alert = True
 
-      form = IntensitySliderForm(initial = {'slider_level': sliderSetting.slider_level})
-      return render(request, "sns/semantic_slider.html", {
-        'form': form,
-        'show_alert': True,
-        'post_url_string': 'sns:intensity_slider',
-        'with_examples': with_examples,
-      })
-
-    else:
-      return HttpResponse('oops', content_type='text/plain')
-  else:
-    form = IntensitySliderForm(initial = {'slider_level': sliderSetting.slider_level})
-    return render(request, "sns/semantic_slider.html", {
-      'form': form,
-      'show_alert': False,
-      'post_url_string': 'sns:intensity_slider',
-      'with_examples': with_examples,
-    })
+  form = IntensitySliderForm(initial = {'slider_level': sliderSetting.slider_level})
+  return render(request, "sns/semantic_slider.html", {
+    'form': form,
+    'uid': participant.id,
+    'show_alert': False,
+    'slider_mode': 'intensity',
+    'with_examples': with_examples,
+  })
 
 def proportion_slider(request, **kwargs):
   with_examples = kwargs['with_examples']
   participant = getParticipantFromSession(request)
-  sliderSetting, _ = ProportionSliderSetting.objects.get_or_create(participant = participant)
+  if participant is None:
+    return HttpResponseRedirect(reverse('sns:register'))
 
+  sliderSetting, _ = ProportionSliderSetting.objects.get_or_create(participant = participant)
+  show_alert = False
+
+  # Handle the POST
   if request.method == 'POST':
     form = ProportionSliderForm(request.POST)
     if form.is_valid():
       slider_level = form.cleaned_data['slider_level']
       sliderSetting.slider_level = slider_level
       sliderSetting.save()
+      show_alert = True
 
-      form = ProportionSliderForm(initial = {'slider_level': sliderSetting.slider_level})
-      return render(request, "sns/semantic_slider.html", {
-        'form': form,
-        'show_alert': True,
-        'post_url_string': 'sns:proportion_slider',
-        'with_examples': with_examples,
-      })
-
-    else:
-      return HttpResponse('oops', content_type='text/plain')
-  else:
-    form = ProportionSliderForm(initial = {'slider_level': sliderSetting.slider_level})
-    return render(request, "sns/semantic_slider.html", {
-      'form': form,
-      'show_alert': False,
-      'post_url_string': 'sns:proportion_slider',
-      'with_examples': with_examples,
-    })    
+  form = ProportionSliderForm(initial = {'slider_level': sliderSetting.slider_level})
+  return render(request, "sns/semantic_slider.html", {
+    'form': form,
+    'uid': participant.id,
+    'show_alert': show_alert,
+    'slider_mode': 'probability',
+    'with_examples': with_examples,
+  })
