@@ -22,12 +22,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-qazmz7lhz)g6s(t(m_hevrlo2n+5l^+k99zp3n8*rj=ty5=)_2'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
-
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -51,7 +45,6 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'surveysite.urls'
-
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -70,10 +63,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'surveysite.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -81,10 +72,8 @@ DATABASES = {
     }
 }
 
-
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -100,28 +89,27 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
-# Internationalization
-# https://docs.djangoproject.com/en/3.2/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
-
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/3.2/howto/static-files/
-
-STATIC_URL = '/static/'
-STATIC_ROOT = "static"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+if os.environ.get('DJANGO_DEVELOPMENT'):
+  DEBUG = True
+  ALLOWED_HOSTS = []
+  STATIC_URL = '/static/'
+  STATIC_ROOT = "static"
+
+else:
+  ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'dev.railgun.in']
+
+  FORCE_SCRIPT_NAME = '/app/personalmod/'
+  SCRIPT_NAME = FORCE_SCRIPT_NAME
+  STATIC_URL = f'{SCRIPT_NAME}static/'
+  STATIC_ROOT = "static"
