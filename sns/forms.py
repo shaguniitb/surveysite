@@ -2,12 +2,6 @@ from django import forms
 from .widgets import SemanticScale
 from .models import Participant, WordFilterSetting, IntensitySliderSetting, ProportionSliderSetting
 
-class LoginForm(forms.Form):
-  action = forms.CharField(
-    required = False,
-    widget=None
-  )
-
 class ParticipantForm(forms.ModelForm):
   id = forms.CharField()
   class Meta:
