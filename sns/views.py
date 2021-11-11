@@ -12,6 +12,8 @@ import json, re
 # def index(request):
 #   return HttpResponse("Hello, world. You're at the sns index.")
 
+MAX_COMMENTS = 20
+
 def is_new_user(request):
   if request.method == 'POST':
     form = NewUserForm(request.POST)
@@ -47,21 +49,23 @@ def getParticipantFromSession(request):
     participant = None
   return participant
 
-def get_matched_comment_ids(word_filters):
+def get_matched_comments(word_filters):
   comments = Comment.objects.all()
-  if (word_filters == '' or word_filters is None):
-    return [comment.id for comment in comments]
-  matched_comment_ids = []
-  for comment in comments:
-    lookups = []
-    rules = word_filters.strip().split(',')
-    for rule in rules:
-      rule = rule.strip()
-      lookup = re.search(r'\b({})\b'.format(rule), comment.text, re.IGNORECASE)
-      lookups.append(lookup)
-    if any(lookups):
-      matched_comment_ids.append(comment.id)
-  return matched_comment_ids
+  if (not(word_filters == '' or word_filters is None)):
+    matched_comment_ids = []
+    for comment in comments:
+      lookups = []
+      rules = word_filters.strip().split(',')
+      for rule in rules:
+        rule = rule.strip()
+        lookup = re.search(r'\b({})\b'.format(rule), comment.text, re.IGNORECASE)
+        lookups.append(lookup)
+      if any(lookups):
+        matched_comment_ids.append(comment.id)
+    comments = Comment.objects.exclude(id__in = matched_comment_ids)
+  if (len(comments) > MAX_COMMENTS):
+    comments = comments[:MAX_COMMENTS]
+  return comments
 
 def settingsPage(setting):
   if (setting == "1"):
@@ -103,9 +107,9 @@ def feed(request):
     toggleSetting, _ = ToggleSetting.objects.get_or_create(participant = participant)
     filter_toxic = toggleSetting.filter_toxic
     if (filter_toxic):
-      comments = Comment.objects.filter(perspective_score__lte = 0.8)
+      comments = Comment.objects.filter(toxicity_score__lt = 0.6)[:MAX_COMMENTS]
     else:
-      comments = Comment.objects.all()
+      comments = Comment.objects.all()[:MAX_COMMENTS]
 
   elif (participant.setting == "2"):
     participant.resetToggle()
@@ -113,9 +117,7 @@ def feed(request):
     participant.resetProportionSlider()    
     wordFilterSetting, _ = WordFilterSetting.objects.get_or_create(participant = participant)
     word_filters = wordFilterSetting.word_filters
-    matched_comment_ids = get_matched_comment_ids(word_filters)
-    comments = Comment.objects.exclude(id__in = matched_comment_ids)
-    print (len(comments))
+    comments = get_matched_comments(word_filters)
 
   elif (participant.setting == "3"):
     participant.resetToggle()
@@ -144,30 +146,45 @@ def getCommentsFromSets(setList):
 
 def get_slider_comments(slider_type, slider_level):
   if (slider_type == 'intensity'):
-    return Comment.objects.all()
     if (slider_level == 1):
-      first_set = Comment.objects.filter(perspective_score__gte = 0.2)
-      second_set = Comment.objects.filter(perspective_score__lte = 0.2, toxicity_score__gte = 0.2)
-      return getCommentsFromSets([first_set, second_set])
+      first_set = Comment.objects.filter(toxicity_score__gte = 0.6)
+      second_set = Comment.objects.filter(toxicity_score__lt = 0.6)[:4]  
+      return getCommentsFromSets([first_set, second_set])  
     elif (slider_level == 2):
-      first_set = Comment.objects.filter(perspective_score__gte = 0.2, perspective_score__lte = 0.8)
-      second_set = Comment.objects.filter(perspective_score__lte = 0.2, toxicity_score__gte = 0.2)
-      third_set = Comment.objects.filter(perspective_score__lte = 0.2, toxicity_score__lte = 0.2)[:4]
-      return getCommentsFromSets([first_set, second_set, third_set])
+      first_set = Comment.objects.filter(toxicity_score__gte = 0.6, toxicity_score__lt = 0.9)
+      second_set = Comment.objects.filter(toxicity_score__lt = 0.6)[:8]        
+      return getCommentsFromSets([first_set, second_set])  
     elif (slider_level == 3):
-      first_set = Comment.objects.filter(perspective_score__gte = 0.2, perspective_score__lte = 0.6)
-      second_set = Comment.objects.filter(perspective_score__lte = 0.2, toxicity_score__gte = 0.2)
-      third_set = Comment.objects.filter(perspective_score__lte = 0.2, toxicity_score__lte = 0.2)[:8]
-      return getCommentsFromSets([first_set, second_set, third_set])
+      first_set = Comment.objects.filter(toxicity_score__gte = 0.6, toxicity_score__lt = 0.8)
+      second_set = Comment.objects.filter(toxicity_score__lt = 0.6)[:12]              
+      return getCommentsFromSets([first_set, second_set])  
     elif (slider_level == 4):
-      first_set = Comment.objects.filter(perspective_score__gte = 0.2, perspective_score__lte = 0.4)
-      second_set = Comment.objects.filter(perspective_score__lte = 0.2, toxicity_score__gte = 0.2)
-      third_set = Comment.objects.filter(perspective_score__lte = 0.2, toxicity_score__lte = 0.2)[:12]      
-      return getCommentsFromSets([first_set, second_set, third_set])
+      first_set = Comment.objects.filter(toxicity_score__gte = 0.6, toxicity_score__lt = 0.7)
+      second_set = Comment.objects.filter(toxicity_score__lt = 0.6)[:16]                    
+      return getCommentsFromSets([first_set, second_set])  
     elif (slider_level == 5):
-      second_set = Comment.objects.filter(perspective_score__lte = 0.2, toxicity_score__gte = 0.2)
-      third_set = Comment.objects.filter(perspective_score__lte = 0.2, toxicity_score__lte = 0.2)[:16]            
-      return getCommentsFromSets([second_set, third_set])      
+      return Comment.objects.filter(toxicity_score__lt = 0.6)
+
+  elif (slider_type == 'proportion'):
+    if (slider_level == 1):
+      first_set = Comment.objects.filter(toxicity_score__gte = 0.6)
+      second_set = Comment.objects.filter(toxicity_score__lt = 0.6)[:4]  
+      return getCommentsFromSets([first_set, second_set])  
+    elif (slider_level == 2):
+      first_set = Comment.objects.filter(toxicity_score__gte = 0.6)[:12]
+      second_set = Comment.objects.filter(toxicity_score__lt = 0.6)[:8]        
+      return getCommentsFromSets([first_set, second_set])  
+    elif (slider_level == 3):
+      first_set = Comment.objects.filter(toxicity_score__gte = 0.6)[:8]
+      second_set = Comment.objects.filter(toxicity_score__lt = 0.6)[:12]              
+      return getCommentsFromSets([first_set, second_set])  
+    elif (slider_level == 4):
+      first_set = Comment.objects.filter(toxicity_score__gte = 0.6)[:4]
+      second_set = Comment.objects.filter(toxicity_score__lt = 0.6)[:16]                    
+      return getCommentsFromSets([first_set, second_set])  
+    elif (slider_level == 5):
+      return Comment.objects.filter(toxicity_score__lt = 0.6)      
+
 
 def toggle(request):
   participant = getParticipantFromSession(request)
@@ -231,7 +248,7 @@ def intensity_slider(request):
     else:
       return HttpResponse('oops', content_type='text/plain')
   else:
-    form = IntensitySliderForm(initial = {'value': sliderSetting.slider_level})
+    form = IntensitySliderForm(initial = {'slider_level': sliderSetting.slider_level})
     return render(request, "sns/semantic_slider.html", {
       'form': form,
       'show_alert': False,
@@ -263,7 +280,7 @@ def proportion_slider(request):
     else:
       return HttpResponse('oops', content_type='text/plain')
   else:
-    form = ProportionSliderForm(initial = {'value': sliderSetting.slider_level})
+    form = ProportionSliderForm(initial = {'slider_level': sliderSetting.slider_level})
     return render(request, "sns/semantic_slider.html", {
       'form': form,
       'show_alert': False,
