@@ -107,6 +107,7 @@ if os.environ.get('DJANGO_DEVELOPMENT'):
   STATIC_ROOT = "static"
 
 else:
+  DEBUG = True
   ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'dev.railgun.in']
 
   FORCE_SCRIPT_NAME = '/app/personalmod/'
