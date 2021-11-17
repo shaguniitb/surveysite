@@ -4,7 +4,7 @@ from django.shortcuts import redirect, reverse
 from django.template.loader import render_to_string
 from django.template import RequestContext
 from .models import Comment, Participant, ToggleSetting, WordFilterSetting, IntensitySliderSetting, ProportionSliderSetting
-from .forms import WfForm, IntensitySliderForm, ProportionSliderForm, InterfaceForm, LoginForm, ParticipantForm
+from .forms import WfForm, IntensitySliderForm, ProportionSliderForm, InterfaceForm, ParticipantForm
 import json, re
 
 # Create your views here.
@@ -19,8 +19,8 @@ def register(request):
       return HttpResponseRedirect(reverse('sns:feed'))
     elif action == 'Existing User':
       return HttpResponseRedirect(reverse('sns:login'))
-  form = LoginForm()
-  return render(request, "sns/is_new_user.html", {'form': form, 'uid': '?'})
+  # form = LoginForm()
+  return render(request, "sns/is_new_user.html", {'uid': '?'})
 
 def login(request):
   if request.method == 'POST':
