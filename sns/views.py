@@ -8,7 +8,7 @@ from .forms import WfForm, IntensitySliderForm, ProportionSliderForm, InterfaceF
 import json, re
 
 # Create your views here.
-MAX_COMMENTS = 20
+MAX_COMMENTS = 30
 
 def register(request):
   if request.method == 'POST':
@@ -104,43 +104,43 @@ def getCommentsFromSets(setList):
 def get_slider_comments(slider_type, slider_level):
   if (slider_type == 'intensity'):
     if (slider_level == 1):
-      first_set = Comment.objects.filter(toxicity_score__gte = 0.6)
-      second_set = Comment.objects.filter(toxicity_score__lt = 0.6)[:4]
+      first_set = Comment.objects.filter(toxicity_score__gte = 0.2)
+      second_set = Comment.objects.filter(toxicity_score__lt = 0.2)[:10]
       return getCommentsFromSets([first_set, second_set])
     elif (slider_level == 2):
-      first_set = Comment.objects.filter(toxicity_score__gte = 0.6, toxicity_score__lt = 0.9)
-      second_set = Comment.objects.filter(toxicity_score__lt = 0.6)[:8]
+      first_set = Comment.objects.filter(toxicity_score__gte = 0.2, toxicity_score__lt = 0.8)
+      second_set = Comment.objects.filter(toxicity_score__lt = 0.2)[:15]
       return getCommentsFromSets([first_set, second_set])
     elif (slider_level == 3):
-      first_set = Comment.objects.filter(toxicity_score__gte = 0.6, toxicity_score__lt = 0.8)
-      second_set = Comment.objects.filter(toxicity_score__lt = 0.6)[:12]
+      first_set = Comment.objects.filter(toxicity_score__gte = 0.2, toxicity_score__lt = 0.6)
+      second_set = Comment.objects.filter(toxicity_score__lt = 0.2)[:20]
       return getCommentsFromSets([first_set, second_set])
     elif (slider_level == 4):
-      first_set = Comment.objects.filter(toxicity_score__gte = 0.6, toxicity_score__lt = 0.7)
-      second_set = Comment.objects.filter(toxicity_score__lt = 0.6)[:16]
+      first_set = Comment.objects.filter(toxicity_score__gte = 0.2, toxicity_score__lt = 0.4)
+      second_set = Comment.objects.filter(toxicity_score__lt = 0.2)[:25]
       return getCommentsFromSets([first_set, second_set])
     elif (slider_level == 5):
-      return Comment.objects.filter(toxicity_score__lt = 0.6)
+      return Comment.objects.filter(toxicity_score__lt = 0.6)[:30]
 
   elif (slider_type == 'proportion'):
     if (slider_level == 1):
-      first_set = Comment.objects.filter(toxicity_score__gte = 0.6)
-      second_set = Comment.objects.filter(toxicity_score__lt = 0.6)[:4]
+      first_set = Comment.objects.filter(toxicity_score__gte = 0.2)
+      second_set = Comment.objects.filter(toxicity_score__lt = 0.2)[:10]
       return getCommentsFromSets([first_set, second_set])
     elif (slider_level == 2):
-      first_set = Comment.objects.filter(toxicity_score__gte = 0.6)[:12]
-      second_set = Comment.objects.filter(toxicity_score__lt = 0.6)[:8]
+      first_set = Comment.objects.filter(toxicity_score__gte = 0.2)[:15]
+      second_set = Comment.objects.filter(toxicity_score__lt = 0.2)[:15]
       return getCommentsFromSets([first_set, second_set])
     elif (slider_level == 3):
-      first_set = Comment.objects.filter(toxicity_score__gte = 0.6)[:8]
-      second_set = Comment.objects.filter(toxicity_score__lt = 0.6)[:12]
+      first_set = Comment.objects.filter(toxicity_score__gte = 0.2)[:10]
+      second_set = Comment.objects.filter(toxicity_score__lt = 0.2)[:20]
       return getCommentsFromSets([first_set, second_set])
     elif (slider_level == 4):
-      first_set = Comment.objects.filter(toxicity_score__gte = 0.6)[:4]
-      second_set = Comment.objects.filter(toxicity_score__lt = 0.6)[:16]
+      first_set = Comment.objects.filter(toxicity_score__gte = 0.2)[:5]
+      second_set = Comment.objects.filter(toxicity_score__lt = 0.2)[:25]
       return getCommentsFromSets([first_set, second_set])
     elif (slider_level == 5):
-      return Comment.objects.filter(toxicity_score__lt = 0.6)
+      return Comment.objects.filter(toxicity_score__lt = 0.2)[:30]
 
 def feed(request):
   participant = getParticipantFromSession(request)
@@ -153,7 +153,7 @@ def feed(request):
     toggleSetting, _ = ToggleSetting.objects.get_or_create(participant = participant)
     filter_toxic = toggleSetting.filter_toxic
     if (filter_toxic):
-      comments = Comment.objects.filter(toxicity_score__lt = 0.6)[:MAX_COMMENTS]
+      comments = Comment.objects.filter(toxicity_score__lt = 0.2)[:MAX_COMMENTS]
     else:
       comments = Comment.objects.all()[:MAX_COMMENTS]
   elif (participant.setting == "2"):
