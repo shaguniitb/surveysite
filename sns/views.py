@@ -6,6 +6,7 @@ from django.template import RequestContext
 from .models import Comment, Participant, ToggleSetting, WordFilterSetting, IntensitySliderSetting, ProportionSliderSetting
 from .forms import WfForm, IntensitySliderForm, ProportionSliderForm, InterfaceForm, ParticipantForm
 import json, re
+from random import shuffle
 
 # Create your views here.
 MAX_COMMENTS = 30
@@ -124,19 +125,19 @@ def get_slider_comments(slider_type, slider_level):
 
   elif (slider_type == 'proportion'):
     if (slider_level == 1):
-      first_set = Comment.objects.filter(toxicity_score__gte = 0.2)
+      first_set = Comment.objects.filter(toxicity_score__gte = 0.2).order_by('num_likes')
       second_set = Comment.objects.filter(toxicity_score__lt = 0.2)[:10]
       return getCommentsFromSets([first_set, second_set])
     elif (slider_level == 2):
-      first_set = Comment.objects.filter(toxicity_score__gte = 0.2)[:15]
+      first_set = Comment.objects.filter(toxicity_score__gte = 0.2).order_by('num_likes')[:15]
       second_set = Comment.objects.filter(toxicity_score__lt = 0.2)[:15]
       return getCommentsFromSets([first_set, second_set])
     elif (slider_level == 3):
-      first_set = Comment.objects.filter(toxicity_score__gte = 0.2)[:10]
+      first_set = Comment.objects.filter(toxicity_score__gte = 0.2).order_by('num_likes')[:10]
       second_set = Comment.objects.filter(toxicity_score__lt = 0.2)[:20]
       return getCommentsFromSets([first_set, second_set])
     elif (slider_level == 4):
-      first_set = Comment.objects.filter(toxicity_score__gte = 0.2)[:5]
+      first_set = Comment.objects.filter(toxicity_score__gte = 0.2).order_by('num_likes')[:5]
       second_set = Comment.objects.filter(toxicity_score__lt = 0.2)[:25]
       return getCommentsFromSets([first_set, second_set])
     elif (slider_level == 5):
