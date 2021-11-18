@@ -61,12 +61,19 @@
     }
     if (typeof examplesDiv !== 'undefined' && examplesDiv !== null) {
       examplesDiv.innerHTML = '';
-      examples['L' + level].forEach(function (item, i) {
-        var example = document.createElement('div');
-        example.className = 'tweet';
-        examplesDiv.appendChild(example);
-        example.innerText = item;
-      });
+      var examplesList = examples['L' + level];
+      if (typeof examplesList === 'undefined' || examplesList === null) {
+        console.log(mode)
+      } else if (examplesList.length === 0) {
+        examplesDiv.innerText = 'Nothing removed.'
+      } else {
+        examplesList.forEach(function (item, i) {
+          var example = document.createElement('div');
+          example.className = 'tweet';
+          examplesDiv.appendChild(example);
+          example.innerText = item;
+        });
+      }
     }
   }
 
