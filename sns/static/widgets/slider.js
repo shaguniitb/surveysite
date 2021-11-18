@@ -2,28 +2,26 @@
 (function () {
   const INTENSITY_EXAMPLES = {
     'L5': [
-      'In Kansas when I was growing up we were able to get our licenses at 14. Most of the kids in school were farm kids. It was not unusual for the boys driving pickups to school would have gun racks in the back window with guns. Those were the days.',
-      'i may not wanna say it but just so you know youre never any better than myself when it comes to whatever im capable of doing'
+      'Banter comes with sports. If you\'re losing sleep over what someone had to say on social media then you have issues. What did you think we weren\'t gonna talk shit? It\'s the softies like you that can\'t take it and go fishing for screenshots.',
+      'He is insinuating that Elena Kaigan is an illegal because of her ethnicity? This mofo is lower than a snake\'s belly under a wagon wheel.',
+      'IDK who you are but you know good &amp; well that this is a LOADED, misguided, & misleading question. Cut that shit out, knucklehead, you know better. And u know EXACTLY what you\'re doing! 👌🏻'
     ],
     'L4': [
-      'Autism is a social disability. To get married you need social skills.',
-      'Football players grind so hard to get that NFL paycheck and females do everything in they power to ruin a mans life over a weak ahh relationship'
+      'Idk why niggas be thinking saying they gone put a baby in a mf is a compliment 😂 I don\'t want no nigga in Madison baby 🗣💯',
+      'I heard somewhere that Nadler is a pedophile, and is one of the sexual predators/pedophiles in Congress that used MILLIONS of taxpayer $$$ to settle lawsuits with VICTIMS. #ReleaseTheList',
+      'What that you have 20 friends??? Lol loser'
     ],
     'L3': [
-      'Nigel Farage looks like a toad plotting a practical joke. Theresa May looks like a depressed waxwork. Boris Johnson looks like a sheepdog peeping out from under an upturned colander of spaghetti. That sort of thing. @User on UK sketch writers!',
-      'I can\'t believe some girls are pathetic enough to actually be in a e-relationship',
-      'White peoples be on Twitter calling us niggers and everything but never get banned or blocked'
+      'Project managers don\'t pay people, you dumbass 😂 I guess nobody\'s ever hired you for anything big enough to deal with one. Also, it\'s not my money, so even if payment was my call, why would I care? Are you sure you work in that field?',
+      'I\'m not your comrade. "daaaaam" this is not correct English, it is spelled damned. "I am..,,, you really" this is not correct English either. "lol You need a time out." this one is complete retardation. 😀😀😀😀',
+      'So that\'s why Eric is the slow ugly one.'
     ],
     'L2': [
-      'Dick Eric Swalloswell die or something? I keep seeing these obituary type tweets from all the idiot dims running for President.',
-      'he look like a bosnian terrorist  😭😭😭😭',
-      'Pakistanis should stfu your team didn\'t even reached to semifinal #indiavsNewzealand'
+      'every fucking week i just wish that asshole that sits near me dies of a heart attack because he has a heart problem',
+      'Either by absorption or adsorption, when I cum on your face, part of me will be a part of you for the rest of the day...',
+      'Killa 2020 : youse a fucking cunt'
     ],
-    'L1': [
-      'why the fuck are you crying? 2) ',
-      'Remind this bitch its about viewer content ! More people watch men play then women ! I have no desire to watch dikes running a ball ⚽️ . Men will always make more',
-      'Nigga swimming with the piss and throw up off Bourbon?! 🤦'
-    ]
+    'L1': []
   };
   const PROBABILITY_EXAMPLES = {
     'L1': [
