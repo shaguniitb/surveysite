@@ -6,6 +6,7 @@ from django.utils import timezone
 
 def fill_tables_from_csv(filename):
     df = pd.read_csv(filename)
+    df = df.sample(frac=1)
     for index, row in df.iterrows():
         text = row['comment']
         toxicity_score = row['avg_toxic_score']

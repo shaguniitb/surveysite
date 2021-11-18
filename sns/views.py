@@ -6,6 +6,7 @@ from django.template import RequestContext
 from .models import Comment, Participant, ToggleSetting, WordFilterSetting, IntensitySliderSetting, ProportionSliderSetting
 from .forms import WfForm, IntensitySliderForm, ProportionSliderForm, InterfaceForm, ParticipantForm
 import json, re
+from random import shuffle
 
 # Create your views here.
 MAX_COMMENTS = 30
@@ -120,23 +121,23 @@ def get_slider_comments(slider_type, slider_level):
       second_set = Comment.objects.filter(toxicity_score__lt = 0.2)[:25]
       return getCommentsFromSets([first_set, second_set])
     elif (slider_level == 5):
-      return Comment.objects.filter(toxicity_score__lt = 0.6)[:30]
+      return Comment.objects.filter(toxicity_score__lt = 0.2)[:30]
 
   elif (slider_type == 'proportion'):
     if (slider_level == 1):
-      first_set = Comment.objects.filter(toxicity_score__gte = 0.2)
+      first_set = Comment.objects.filter(toxicity_score__gte = 0.2).order_by('num_likes')
       second_set = Comment.objects.filter(toxicity_score__lt = 0.2)[:10]
       return getCommentsFromSets([first_set, second_set])
     elif (slider_level == 2):
-      first_set = Comment.objects.filter(toxicity_score__gte = 0.2)[:15]
+      first_set = Comment.objects.filter(toxicity_score__gte = 0.2).order_by('num_likes')[:15]
       second_set = Comment.objects.filter(toxicity_score__lt = 0.2)[:15]
       return getCommentsFromSets([first_set, second_set])
     elif (slider_level == 3):
-      first_set = Comment.objects.filter(toxicity_score__gte = 0.2)[:10]
+      first_set = Comment.objects.filter(toxicity_score__gte = 0.2).order_by('num_likes')[:10]
       second_set = Comment.objects.filter(toxicity_score__lt = 0.2)[:20]
       return getCommentsFromSets([first_set, second_set])
     elif (slider_level == 4):
-      first_set = Comment.objects.filter(toxicity_score__gte = 0.2)[:5]
+      first_set = Comment.objects.filter(toxicity_score__gte = 0.2).order_by('num_likes')[:5]
       second_set = Comment.objects.filter(toxicity_score__lt = 0.2)[:25]
       return getCommentsFromSets([first_set, second_set])
     elif (slider_level == 5):
@@ -146,6 +147,7 @@ def feed(request):
   participant = getParticipantFromSession(request)
   if participant is None:
     return HttpResponseRedirect(reverse('sns:register'))
+  print ("setting:", participant.setting)
   if (participant.setting == "1"):
     participant.resetWordFilter()
     participant.resetIntensitySlider()
@@ -169,6 +171,7 @@ def feed(request):
     participant.resetProportionSlider()
     sliderSetting, _ = IntensitySliderSetting.objects.get_or_create(participant = participant)
     slider_level = sliderSetting.slider_level
+    print ("slider level:", slider_level)
     comments = get_slider_comments('intensity', slider_level)
   elif (participant.setting == "4"):
     participant.resetToggle()
