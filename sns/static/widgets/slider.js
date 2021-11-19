@@ -51,7 +51,7 @@
     }
   }
 
-  function handleSliderChange(level, mode, examples) {
+  function handleSliderChange(level, mode, showExamples) {
     if (mode === 'intensity') {
       var examples = INTENSITY_EXAMPLES;
       var explanations = INTENSITY_EXPLANATIONS;
