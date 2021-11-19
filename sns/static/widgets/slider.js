@@ -24,65 +24,75 @@
     'L1': []
   };
   const PROBABILITY_EXAMPLES = {
-    'L1': [
-      'there should be'
-    ],
-    'L2': [
-      'some examples here'
-    ],
-    'L3': [
-      'but there are not'
-    ],
-    'L4': [
-      'so this is just filled with nothing'
-    ],
-    'L5': [
-      'and forever nothing'
-    ],
+    'L1': [],
+    'L2': [],
+    'L3': [],
+    'L4': [],
+    'L5': [],
+  };
+  const INTENSITY_EXPLANATIONS = {
+    'L1': 'You have set the moderation to "Nothing". No posts will be removed at this level.',
+    'L2': 'You have set the moderation to "Very Toxic". At this level, posts that are at the toxicity of "very toxic" will be removed. ',
+    'L3': 'You have set the moderation to "Toxic". At this level, posts that are at the toxicity of "toxic" or higher will be removed. ',
+    'L4': 'You have set the moderation to "Somewhat Toxic". At this level, posts that are at the toxicity of "somewhat toxic" or higher will be removed. ',
+    'L5': 'You have set the moderation to "Mildly Toxic". At this level, posts that are at the toxicity of "mildly toxic" or higher will be removed. ',
+  };
+  const PROBABILITY_EXPLANATIONS = {
+    'L1': 'No posts will be removed at this level.',
+    'L2': 'Few posts will be removed at this level.',
+    'L3': 'Some posts will be removed at this level.',
+    'L4': 'More posts will be removed at this level.',
+    'L5': 'Many posts will be removed at this leve.',
   };
 
-  function makeChangeListener(mode) {
+  function makeChangeListener(mode, showExamples) {
     return function (e) {
-      handleSliderChange(e.target.value, mode);
+      handleSliderChange(e.target.value, mode, showExamples);
     }
   }
 
-  function handleSliderChange(level, mode) {
+  function handleSliderChange(level, mode, examples) {
     if (mode === 'intensity') {
       var examples = INTENSITY_EXAMPLES;
+      var explanations = INTENSITY_EXPLANATIONS;
     } else if (mode === 'probability') {
       var examples = PROBABILITY_EXAMPLES;
+      var explanations = INTENSITY_EXPLANATIONS;
     }
 
     var descDiv = document.getElementById('slider-explanation');
     var examplesDiv = document.getElementById('slider-examples');
     if (typeof descDiv !== 'undefined' && descDiv !== null) {
-      descDiv.innerText = 'Slider set to ' + level + '. Here are some examples of comments that will be filtered:';
+      descDiv.innerText = explanations['L' + level] +
+        '';
     }
     if (typeof examplesDiv !== 'undefined' && examplesDiv !== null) {
       examplesDiv.innerHTML = '';
-      var examplesList = examples['L' + level];
-      if (typeof examplesList === 'undefined' || examplesList === null) {
-        console.log(mode)
-      } else if (examplesList.length === 0) {
-        examplesDiv.innerText = 'Nothing removed.'
-      } else {
-        examplesList.forEach(function (item, i) {
-          var example = document.createElement('div');
-          example.className = 'tweet';
-          examplesDiv.appendChild(example);
-          example.innerText = item;
-        });
+      if (showExamples) {
+        var examplesList = examples['L' + level];
+        if (typeof examplesList === 'undefined' || examplesList === null) {
+          console.log(mode);
+        } else if (examplesList.length === 0) {
+          examplesDiv.innerText = '';
+        } else {
+          examplesList.forEach(function (item, i) {
+            var example = document.createElement('div');
+            example.className = 'tweet';
+            examplesDiv.appendChild(example);
+            example.innerText = item;
+          });
+          descDiv.innerText += 'Here are some examples of additional posts that will be removed at this level:'
+        }
       }
     }
   }
 
-  function bindSliders(mode) {
+  function bindSliders(mode, showExamples) {
     var inputs = document.getElementsByTagName('input');
     for (var i = 0; i < inputs.length; i++) {
       if (inputs[i].type == 'range') {
-        inputs[i].addEventListener('change', makeChangeListener(mode));
-        handleSliderChange(inputs[i].value, mode);
+        inputs[i].addEventListener('change', makeChangeListener(mode, showExamples));
+        handleSliderChange(inputs[i].value, mode, showExamples);
         return;
       }
     }
@@ -90,11 +100,14 @@
 
   window.addEventListener('load', function () {
     var modeElem = document.getElementById('slider-mode');
+    var examplesElem = document.getElementById('examples-mode');
     var mode = 'intensity';
+    var showExamples = (examplesElem !== null &&
+      examplesElem.innerText.trim() === 'on');
     if (modeElem !== null) {
       mode = modeElem.innerText.trim();
     }
     // find and bind
-    bindSliders(mode);
+    bindSliders(mode, showExamples);
   });
 })();

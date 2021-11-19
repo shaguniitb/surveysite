@@ -20,10 +20,10 @@
           {% if slider_mode == 'intensity' %}
             <div class="levels">
               <div class="level">Nothing</div>
-              <div class="level">Remove Very Toxic</div>
-              <div class="level">Remove Toxic</div>
-              <div class="level">Remove Somwhat Toxic</div>
-              <div class="level">Remove Mildly Toxic</div>
+              <div class="level">Very Toxic</div>
+              <div class="level">Toxic</div>
+              <div class="level">Somwhat Toxic</div>
+              <div class="level">Mildly Toxic</div>
             </div>
           {% else %}
             <div class="levels">
@@ -37,13 +37,15 @@
           <div class="leveled-slider">
             {{ form.slider_level }}
           </div>
+          <div class="level-explanation" id="slider-explanation">
+            This will be filled once the slider is set.
+            You should not see this message.
+          </div>
+          <div class="level-examples" id="slider-examples"></div>
           {% if with_examples %}
-            <div class="level-explanation" id="slider-explanation">
-              This will be filled once the slider is set.
-              You should not see this message.
-            </div>
-            <div class="level-examples" id="slider-examples">
-            </div>
+            <div id="examples-mode" style="display: none;">on</div>
+          {% else %}
+            <div id="examples-mode" style="display: none;">off</div>
           {% endif %}
           <div id="slider-mode" style="display: none;">{{ slider_mode }}</div>
         </formgroup>
