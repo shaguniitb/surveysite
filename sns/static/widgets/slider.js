@@ -57,7 +57,7 @@
       var explanations = INTENSITY_EXPLANATIONS;
     } else if (mode === 'probability') {
       var examples = PROBABILITY_EXAMPLES;
-      var explanations = INTENSITY_EXPLANATIONS;
+      var explanations = PROBABILITY_EXPLANATIONS;
     }
 
     var descDiv = document.getElementById('slider-explanation');
