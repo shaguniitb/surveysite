@@ -18,10 +18,10 @@ class Comment(models.Model):
 class Participant(models.Model):
 
     INTERFACE_CHOICES = (
-        ("1", "Toggle"),
-        ("2", "Word Filter"),
-        ("3", "Intensity Slider"),
-        ("4", "Proportion Slider"),
+        ("1", "1"),
+        ("2", "2"),
+        ("3", "3"),
+        ("4", "4"),
     )
 
     username = models.CharField(max_length=100, blank=True, null=True)
